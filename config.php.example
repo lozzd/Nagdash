@@ -1,0 +1,19 @@
+<?php
+// Config
+
+// Your Nagios hosts
+$nagios_hosts = array(
+    array("hostname" => "nagios01.dc1.company.com", "port" => "6315", "protocol" => "http", "tag" => "DC1", "tagcolour" => "#336699"), 
+    array("hostname" => "nagios01.dc2.company.com", "port" => "6315", "protocol" => "http", "tag" => "DC2", "tagcolour" => "#696969"), 
+    array("hostname" => "nagios01.dc3.company.com", "port" => "6315", "protocol" => "http", "tag" => "DC3", "tagcolour" => "#4169E1"), 
+// and so on...    
+//  array("hostname" => "example.company.com", "port" => "6315", "protocol" => "http", "tag" => "HOST", "tagcolour" => "#FFA500"), 
+);
+
+// Globally filter out hosts using a regex, if you wish, or leave blank for all. 
+$filter = "";
+
+// Default downtime duration, measured in seconds, for scheduling downtime via the Nagdash interface.  
+$duration = 60*60;
+
+// End Config
