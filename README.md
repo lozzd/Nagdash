@@ -2,9 +2,9 @@
 
 ## What is Nagdash?
 
-Nagdash is the long awaited replacement of [http://github.com/lozzd/naglite2](Naglite2).
+Nagdash is the long awaited replacement of [Naglite2](http://github.com/lozzd/naglite2).
 
-Written in PHP, it uses the [https://github.com/xb95/nagios-api](Nagios-api), PHP and a sprinkling of jQuery and Bootstrap to provide a full screen, clean Nagios experience which is suitable either for a Dashboard/NOC screen, or simply a simple view to replace the Nagios UI. 
+Written in PHP, it uses the [Nagois-api](https://github.com/xb95/nagios-api), PHP and a sprinkling of jQuery and Bootstrap to provide a full screen, clean Nagios experience which is suitable either for a Dashboard/NOC screen, or simply a simple view to replace the Nagios UI. 
 
 ## Features
 
@@ -51,7 +51,7 @@ Easy configuration
 ## Prerequisites
 * A webserver
 * PHP 4 (or higher)
-* [https://github.com/xb95/nagios-api](Nagios-api) running on one or more Nagios servers
+* [Nagois-api](https://github.com/xb95/nagios-api) running on one or more Nagios servers
 * A big screen to show Nagdash off
 
 ## Installation/configuration
