@@ -75,7 +75,7 @@ deep_ksort($state);
                             *border-collapse: collapse; -webkit-border-radius: 4px;
                             -moz-border-radius: 4px; border-radius: 4px; }
     th                  { border: 1px black solid; background-color: #D8D8D8 }
-    .widetable          { width: 99%; }
+    .widetable          { width: 99%; clear: both }
     .bold               { font-weight: bold; }
     .status_green       { background-color: #269926; color: white; padding: 3px }
     .status_red         { background-color: #FF4040; color: white; padding: 3px }
