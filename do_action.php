@@ -12,6 +12,7 @@ if (!isset($_POST['nag_host'])) {
 
     switch ($action) {
     case "ack":
+        $method = "acknowledge_problem";
         break;
     case "downtime":
         $method = "schedule_downtime";
@@ -26,7 +27,7 @@ if (!isset($_POST['nag_host'])) {
                 $nagios_url = $host['protocol'] . "://" . $host['hostname'] . ":" . $host['port'] . "/" . $method;
             }
         }
-        $payload = json_encode(array("host" => $hostname, "service" => $service, "comment" => "Downtime from Nagdash", "author" => "Nagdash", "duration" => $duration));
+        $payload = json_encode(array("host" => $hostname, "service" => $service, "comment" => "{$method} from Nagdash", "author" => "Nagdash", "duration" => $duration));
         $params = array('http' =>
             array(
                 'method' => 'POST',
@@ -43,7 +44,7 @@ if (!isset($_POST['nag_host'])) {
             if ($return->success) {
                 echo "Command {$method} succeeded on {$hostname} -> {$service}";
             } else {
-                echo "Command {$method} failed!";
+                echo "Command {$method} failed! <pre>{$return->content}</pre>";
             }
         }
     }

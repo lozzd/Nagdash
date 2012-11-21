@@ -79,5 +79,5 @@ The configuration file is fairly simple at this point, but here's an explanation
 
 ## Known issues
 * You will need a relatively up to date copy of the nagios-api, since some fields were not available in the older version. If you see "Reference time not set", you need to update your copy of the nagios-api. 
+* The above also applies for acknowledging problems. If you receive an error that the command is not supported, please update your copy of nagios-api. 
 * Your hosts MUST have unique names between instances. If there are non-unique names, the services from the FIRST Nagios instance will be used. Please let me know if this is a major issue for you, I can add an optional workaround. 
-* The "Acknowledge" button currently does nothing. This is because the nagios-api does not currently allow for acknowledging. I plan to add this soon. 
