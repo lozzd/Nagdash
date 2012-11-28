@@ -16,11 +16,18 @@ if (!isset($_POST['nag_host'])) {
         break;
     case "downtime":
         $method = "schedule_downtime";
+        $duration = 60 * $_POST['duration'];
+        break;
+    case "enable":
+        $method = "enable_notifications";
+        break;
+    case "disable":
+        $method = "disable_notifications";
         break;
     }
 
     if (!$method) {
-        echo "Nagios-api does not support this action yet. ";
+        echo "Nagios-api does not support this action ({$action}) yet. ";
     } else {
         foreach ($nagios_hosts as $host) {
             if ($host['tag'] == $nagios_instance) {

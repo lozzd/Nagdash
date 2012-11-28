@@ -60,7 +60,8 @@ deep_ksort($state);
 <head>
     <title>Nagios Dashboard</title>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-1.3.2.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
     <script>
     function showInfo(show_data) {
         $("#info-window").fadeIn("fast");
@@ -221,20 +222,7 @@ if (count($known_hosts) > 0) {
 <?php
     foreach($broken_services as $service) {
         if ($service['is_hard']) { $soft_tag = ""; } else { $soft_tag = "(soft)"; }
-            $controls = "<a href='#' onClick=\"$.post('do_action.php', { 
-                                                    nag_host: '{$service['tag']}', 
-                                                    hostname: '{$service['hostname']}',
-                                                    service: '{$service['service_name']}', 
-                                                    action: 'ack' }, 
-                                                    function(data) { showInfo(data) } ); return false;\" class='btn'>
-                                                    <i class='icon-check'></i> Ack </a>";
-            $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
-                                                    nag_host: '{$service['tag']}', 
-                                                    hostname: '{$service['hostname']}',
-                                                    service: '{$service['service_name']}', 
-                                                    action: 'downtime' }, 
-                                                    function(data) { showInfo(data) } ); return false;\" class='btn'>
-                                                    <i class='icon-time'></i> Downtime</a>";
+        $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
         echo "<td>{$service['hostname']} <span class='tag tag_{$service['tag']}'>{$service['tag']}</span> <span class='controls'>{$controls}</span></td>";
         echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]}'>{$service['service_name']}</td>";
@@ -290,5 +278,31 @@ function deep_ksort(&$arr) {
         } 
     } 
 } 
+
+function build_controls($tag, $host, $service) {
+    $controls = '<div class="btn-group">';
+    $controls .= "<a href='#' onClick=\"$.post('do_action.php', { 
+        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'ack' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
+            <i class='icon-check'></i> Ack </a>";
+    $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
+            <i class='icon-volume-up'></i> Unsilence</a>";
+    $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
+            <i class='icon-volume-off'></i> Silence</a>";
+    $controls .= '
+        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="icon-time"></i> Downtime <span class="caret"></span></a>
+        <ul class="dropdown-menu pull-right">';
+        $timespans = array("10 minutes" => 10, "30 minutes" => 30, "60 minutes" => 60, "2 hours" => 120, "12 hours" => 720, "1 day" => 1440, "7 days" => 10080);
+        foreach ($timespans as $name => $minutes) {
+            $controls .= "<li><a onClick=\"$.post('do_action.php', 
+                { nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', duration: {$minutes}, action: 'downtime' }, function(data) { showInfo(data) } ); return false;\" 
+                href='#'>{$name}</a></li>";
+        }
+        $controls .= "</ul>";
+    $controls .= "</div>";
+    return $controls;
+}
 
 ?>
