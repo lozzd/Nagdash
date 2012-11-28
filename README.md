@@ -16,7 +16,7 @@ Naglite2, the first iteration, was dependant on parsing the status.dat file that
 * **Clear, simple UI**: Designed to provide an at-a-glance overview of just how much is broken in you infrastructure. The more red, the more you need to panic. Services and hosts that are acknowledged, in downtime, or silenced are hidden away, but still available to avoid attracting the eye.
 * **Know about problems before they happen**: Soft alerts are shown clearly with their attempt number so you get a heads up before Nagios even tells you. 
 * **Automatic refresh**: The screen refreshes via Ajax to provide a unobstrusive live update of the overall status aggregated from all your Nagios instances. 
-* **Two-way interface**: Unlike Naglite2, some core operations are available directly from Nagdash. If using on your desktop/laptop, there are buttons that allow you to Acknowledge or Schedule Downtime with a single click without leaving Nagdash
+* **Two-way interface**: Unlike Naglite2, some core operations are available directly from Nagdash. If using on your desktop/laptop, there are buttons that allow you to Acknowledge problems, Schedule Downtime or enable/disable notifications with a single click without leaving Nagdash
 
 ## Screenshots
 
@@ -40,9 +40,9 @@ Easy to read duration/attempts
 
 Reminder of all the 'known' issues
 
-![Hover over the row for one click downtime](http://laur.ie/grb/d0-wpd4yir9k4oc4.png)
+![Hover over the row for one click service actions](http://laur.ie/grb/68-olkvjqfh0c4ss.png)
 
-Hover next to a service for one click downtime
+Hover next to a service for one click service actions. Schedule downtime (choose length), enable/disable notifications, and acknowledge service problems directly from Nagdash.
 
 ![Easy config](http://laur.ie/grb/ao-drdbihxlc8oog.png)
 
