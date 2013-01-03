@@ -19,21 +19,27 @@ $down_hosts = array();
 $known_hosts = array();
 $known_services = array();
 $broken_services = array();
+$curl_stats = array();
 
 // Function that does the dirty to connect to the Nagios API
 function connectHost($hostname, $port, $protocol) {
+
+    global $curl_stats;
 
     $ch = curl_init("{$protocol}://{$hostname}:{$port}/state");
     curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     if (!$json = curl_exec($ch)) {
         return "<pre>Attempt to hit API failed, sorry. Curl said: " . curl_error($ch) . "</pre>";
+    } else {
+        $curl_stats["$hostname:$port"] = curl_getinfo($ch);
     }
     curl_close($ch);
 
     if (!$state = json_decode($json, true)) {
         return "Attempt to hit API failed, sorry (JSON decode failed)";
     }
+    $curl_stats["$hostname:$port"]['objects'] = count($state['content']);
     return $state['content'];
 }
 
@@ -265,6 +271,15 @@ if (count($known_services) > 0) { ?>
     </div>
 </div>
 
+<?php
+
+echo "<!-- nagios-api server status: -->";
+foreach ($curl_stats as $server => $server_stats) {
+    echo "<!-- {$server_stats['url']} returned code {$server_stats['http_code']}, {$server_stats['size_download']} bytes ";
+    echo "in {$server_stats['total_time']} seconds (first byte: {$server_stats['starttransfer_time']}). JSON parsed {$server_stats['objects']} hosts -->\n";
+}
+
+?>
 
 </body>
 </html>
