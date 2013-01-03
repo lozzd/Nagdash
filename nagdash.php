@@ -23,10 +23,13 @@ $broken_services = array();
 // Function that does the dirty to connect to the Nagios API
 function connectHost($hostname, $port, $protocol) {
 
-    if (!$json = file_get_contents("{$protocol}://{$hostname}:{$port}/state")) {
-        $error = error_get_last();
-        return "Attempt to hit API failed, sorry. <pre>{$error['message']}</pre>";
+    $ch = curl_init("{$protocol}://{$hostname}:{$port}/state");
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    if (!$json = curl_exec($ch)) {
+        return "<pre>Attempt to hit API failed, sorry. Curl said: " . curl_error($ch) . "</pre>";
     }
+    curl_close($ch);
 
     if (!$state = json_decode($json, true)) {
         return "Attempt to hit API failed, sorry (JSON decode failed)";
