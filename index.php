@@ -6,7 +6,7 @@
                   border: 1px #848484 solid; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; 
                   background: #F0F0F0; font-family: "HelveticaNeue-Medium", Helvetica, Arial, sans-serif; }
 </style>
-<script src="http://code.jquery.com/jquery-1.3.2.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
     $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
