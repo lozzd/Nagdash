@@ -50,7 +50,7 @@ Easy configuration
 
 ## Prerequisites
 * A webserver
-* PHP 4 (or higher)
+* PHP 4 (or higher), including the curl extensions for PHP
 * [Nagois-api](https://github.com/xb95/nagios-api) running on one or more Nagios servers
 * A big screen to show Nagdash off
 
