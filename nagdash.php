@@ -154,7 +154,8 @@ foreach($state as $hostname => $host_detail) {
             // If the host is OK, AND the service is NOT OK. 
             if ($service_detail['current_state'] != 0 && $host_detail['current_state'] == 0) {
                 // Sort the service into the correct array. It's either a known issue or not. 
-                if ( ($service_detail['problem_has_been_acknowledged'] > 0) || ($service_detail['scheduled_downtime_depth'] > 0) || ( $service_detail['notifications_enabled'] == 0 )) {
+                if ( ($service_detail['problem_has_been_acknowledged'] > 0) || ($service_detail['scheduled_downtime_depth'] > 0) || ( $service_detail['notifications_enabled'] == 0 ) || 
+                        ($host_detail['scheduled_downtime_depth'] > 0) ) {
                     $array_name = "known_services";
                 } else {
                     $array_name = "broken_services";
