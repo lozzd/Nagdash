@@ -101,7 +101,9 @@ deep_ksort($state);
     .totals             { text-align: right; right: 10px; padding: 5px; border: 1px #848484 solid; position: absolute; background: #F0F0F0; 
                             -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; margin-top: 5px; margin-bottom: 5px; }
     table#broken_services tr td span.controls { display: none; float: right }
+    table#broken_hosts    tr td span.controls { display: none; float: right }
     table#broken_services tr:hover td span.controls { display:inline-block; }
+    table#broken_hosts    tr:hover td span.controls { display:inline-block; }
     #info-window        { display: none; position: absolute; top: 50%; width: 400px; text-align: center; left: 50%; margin-left: -200px;
                           border: 1px #848484 solid; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; margin-top: -75px;
                           background: #F0F0F0; font-family: "HelveticaNeue-Medium", Helvetica, Arial, sans-serif; padding: 20px }
@@ -192,8 +194,9 @@ foreach($state as $hostname => $host_detail) {
     <tr><th>Hostname</th><th width="150px">State</th><th>Duration</th><th>Attempts</th><th>Detail</th></tr>
 <?php
     foreach($down_hosts as $host) {
+        $controls = build_controls($host['tag'], $host['hostname'], '');
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
-        echo "<td>{$host['hostname']} <span class='tag tag_{$host['tag']}'>{$host['tag']}</span></td>";
+        echo "<td>{$host['hostname']} <span class='tag tag_{$host['tag']}'>{$host['tag']}</span> <span class='controls'>{$controls}</span></td>";
         echo "<td>{$nagios_host_status[$host['host_state']]}</td>"; 
         echo "<td>{$host['duration']}</td>";
         echo "<td>{$host['current_attempt']}/{$host['max_attempts']}</td>";

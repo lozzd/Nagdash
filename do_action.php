@@ -7,7 +7,8 @@ if (!isset($_POST['nag_host'])) {
 } else {
     $nagios_instance = $_POST['nag_host'];
     $hostname = $_POST['hostname'];
-    $service = $_POST['service'];
+    # Service is optional
+    $service = ($_POST['service']) ? $_POST['service'] : null;
     $action = $_POST['action'];
 
     switch ($action) {
@@ -49,7 +50,8 @@ if (!isset($_POST['nag_host'])) {
         } else {
             $return = json_decode($result); 
             if ($return->success) {
-                echo "Command {$method} succeeded on {$hostname} -> {$service}";
+                $service = (isset($service)) ? "-> {$service}" : null;
+                echo "Command {$method} succeeded on {$hostname} {$service}";
             } else {
                 echo "Command {$method} failed! <pre>{$return->content}</pre>";
             }
