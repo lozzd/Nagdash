@@ -162,6 +162,14 @@ foreach($state as $hostname => $host_detail) {
                 } else {
                     $array_name = "broken_services";
                 }
+                $downtime_remaining = null;
+                $downtimes = array_merge($service_detail['downtimes'], $host_detail['downtimes']);
+                if ($host_detail['scheduled_downtime_depth'] > 0 || $service_detail['scheduled_downtime_depth'] > 0) {
+                    if (count($downtimes) > 0) {
+                        $downtime_info = array_pop($downtimes);
+                        $downtime_remaining = "- ". timeago($downtime_info['end_time'], null, null, false) . " left";
+                    }
+                }
                 array_push($$array_name, array(
                     "hostname" => $hostname,
                     "service_name" => $service_name,
@@ -172,7 +180,8 @@ foreach($state as $hostname => $host_detail) {
                     "max_attempts" => $service_detail['max_attempts'],
                     "tag" => $host_detail['tag'],
                     "is_hard" => ($service_detail['current_attempt'] >= $service_detail['max_attempts']) ? true : false,
-                    "is_downtime" => ($service_detail['scheduled_downtime_depth'] > 0) ? true : false,
+                    "is_downtime" => ($service_detail['scheduled_downtime_depth'] > 0 || $host_detail['scheduled_downtime_depth'] > 0) ? true : false,
+                    "downtime_remaining" => $downtime_remaining,
                     "is_ack" => ($service_detail['problem_has_been_acknowledged'] > 0) ? true : false,
                     "is_enabled" => ($service_detail['notifications_enabled'] > 0) ? true : false,
                 ));
@@ -257,7 +266,7 @@ if (count($known_services) > 0) { ?>
 <?php 
     foreach($known_services as $service) {
         if ($service['is_ack']) $status_text = "ack";
-        if ($service['is_downtime']) $status_text = "downtime";
+        if ($service['is_downtime']) $status_text = "downtime {$service['downtime_remaining']}";
         if (!$service['is_enabled']) $status_text = "disabled";
         echo "<tr class='known_service'>";
         echo "<td>{$service['hostname']} <span class='tag tag_{$service['tag']}'>{$service['tag']}</td>";
