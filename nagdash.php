@@ -69,6 +69,7 @@ deep_ksort($state);
 <head>
     <title>Nagios Dashboard</title>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="blinkftw.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
     <script>
@@ -206,7 +207,7 @@ foreach($state as $hostname => $host_detail) {
         $controls = build_controls($host['tag'], $host['hostname'], '');
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
         echo "<td>{$host['hostname']} <span class='tag tag_{$host['tag']}'>{$host['tag']}</span> <span class='controls'>{$controls}</span></td>";
-        echo "<td>{$nagios_host_status[$host['host_state']]}</td>"; 
+        echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>"; 
         echo "<td>{$host['duration']}</td>";
         echo "<td>{$host['current_attempt']}/{$host['max_attempts']}</td>";
         echo "<td class=\"desc\">{$host['detail']}</td>";
@@ -248,7 +249,7 @@ if (count($known_hosts) > 0) {
         echo "<tr>";
         echo "<td>{$service['hostname']} <span class='tag tag_{$service['tag']}'>{$service['tag']}</span> <span class='controls'>{$controls}</span></td>";
         echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]}'>{$service['service_name']}</td>";
-        echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$nagios_service_status[$service['service_state']]} {$soft_tag}</td>";
+        echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'><blink>{$nagios_service_status[$service['service_state']]} {$soft_tag}</blink></td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
         echo "</tr>";
