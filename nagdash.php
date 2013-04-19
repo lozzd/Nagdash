@@ -244,12 +244,12 @@ if (count($known_hosts) > 0) {
     <tr><th width="30%">Hostname</th><th width="40%">Service</th><th width="15%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
     foreach($broken_services as $service) {
-        if ($service['is_hard']) { $soft_tag = ""; } else { $soft_tag = "(soft)"; }
+        if ($service['is_hard']) { $soft_tag = "</blink>"; $blink_tag = "<blink>"; } else { $soft_tag = "(soft)"; $blink_tag = ""; }
         $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
         echo "<td>{$service['hostname']} <span class='tag tag_{$service['tag']}'>{$service['tag']}</span> <span class='controls'>{$controls}</span></td>";
         echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]}'>{$service['service_name']}</td>";
-        echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'><blink>{$nagios_service_status[$service['service_state']]} {$soft_tag}</blink></td>";
+        echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$blink_tag}{$nagios_service_status[$service['service_state']]} {$soft_tag}</td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
         echo "</tr>";
