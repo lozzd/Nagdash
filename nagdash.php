@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(!E_NOTICE);
+error_reporting(E_ALL ^ E_NOTICE);
 require_once 'config.php';
 require_once 'timeago.php';
 
@@ -43,20 +43,26 @@ function connectHost($hostname, $port, $protocol) {
     return $state['content'];
 }
 
+// Check to see if the user has a cookie that disables some hosts
+$unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
+if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
+
 // Collect the API data from each Nagios host. 
 foreach ($nagios_hosts as $host) {
-    $host_state = connectHost($host['hostname'], $host['port'], $host['protocol']);
-    if (is_string($host_state)) {
-        $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
-    } else {
-        // Add the tag
-        foreach ($host_state as $this_host => $null) {
-            $host_state[$this_host]['tag'] = $host['tag'];
+    // Check if the host has been disabled locally
+    if (!in_array($host['tag'], $unwanted_hosts)) {
+        $host_state = connectHost($host['hostname'], $host['port'], $host['protocol']);
+        if (is_string($host_state)) {
+            $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
+        } else {
+            // Add the tag
+            foreach ($host_state as $this_host => $null) {
+                $host_state[$this_host]['tag'] = $host['tag'];
+            }
+            $state += (array) $host_state;
         }
-        $state += (array) $host_state;
     }
 }
-
 
 // Sort the array alphabetically by hostname. 
 deep_ksort($state);
@@ -98,6 +104,7 @@ deep_ksort($state);
     #info-window-text   { padding: 30px; vertical-align: middle }
 <?php foreach ($nagios_hosts as $host) { echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n"; } ?>
     .tag                { font-size: 0.6em; color: white; padding: 4px; -webkit-border-radius: 5px; }
+    .tag_label          { color: white; padding-top: 10px !important; padding-bottom: 10px; padding-right: 30px; padding-left: 30px; -webkit-border-radius: 5px; }
     .left               { float: left}
     .totals             { text-align: right; right: 10px; padding: 5px; border: 1px #848484 solid; position: absolute; background: #F0F0F0; 
                             -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; margin-top: 5px; margin-bottom: 5px; }

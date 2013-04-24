@@ -48,6 +48,11 @@ Hover next to a service for one click service actions. Schedule downtime (choose
 
 Easy configuration
 
+![Choose your instances](http://laur.ie/grb/eb-525nfz2144ksw.png)
+
+Live settings screen (accessed using the 's' key) lets you choose which Nagios instances are important to you on this copy of Nagdash. 
+
+
 ## Prerequisites
 * A webserver
 * PHP 4 (or higher), including the curl extensions for PHP
@@ -76,6 +81,15 @@ The configuration file is fairly simple at this point, but here's an explanation
 
 * Filter: This is a simple regex filter if you wish to only display certain hosts from all your instances. For example, if you were making a dedicated dashboard for a team that manages a certain set of servers. 
 * Duration: This sets the default Downtime duration when the "Downtime" button is clicked from the Nagdash interface. Out of the box, it's 60 minutes. 
+
+## On the fly configuration
+You can access the settings dialog inside of Nagdash by pressing the 's' key. 
+
+Currently the following things are configurable when using Nagdash:
+
+* Enable/disable individual Nagios instances depending on your preference
+
+This information is set using a cookie on your local machine, so you can customise Nagdash to your own needs without affecting others. 
 
 ## Known issues
 * You will need a relatively up to date copy of the nagios-api, since some fields were not available in the older version. If you see "Reference time not set", you need to update your copy of the nagios-api. 
