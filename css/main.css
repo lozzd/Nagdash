@@ -18,9 +18,20 @@ th                  { border: 1px black solid; background-color: #D8D8D8 }
 #info-window-text   { padding: 30px; vertical-align: middle }
 .tag                { font-size: 0.6em; color: white; padding: 4px; -webkit-border-radius: 5px; }
 .tag_label          { color: white; padding-top: 10px !important; padding-bottom: 10px; padding-right: 30px; padding-left: 30px; -webkit-border-radius: 5px; }
-.left               { float: left}
-.totals             { text-align: right; right: 10px; padding: 5px; border: 1px #848484 solid; position: absolute; background: #F0F0F0;.
-                        -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; margin-top: 5px; margin-bottom: 5px; }
+
+div.frame           { padding-bottom: 5px; }
+
+div.header h3               { float: left }
+div.header .totals          { float: right }
+
+
+.totals             { text-align: right; right: 10px; padding: 5px; 
+                      border: 1px #848484 solid; position: absolute; 
+                      background: #F0F0F0;.
+                      -webkit-border-radius: 4px; 
+                      -moz-border-radius: 4px; 
+                      border-radius: 4px; 
+                      margin-top: 5px; margin-bottom: 5px; }
 table#broken_services tr td span.controls { display: none; float: right }
 table#broken_hosts    tr td span.controls { display: none; float: right }
 table#broken_services tr:hover td span.controls { display:inline-block; }

@@ -186,9 +186,12 @@ foreach($state as $hostname => $host_detail) {
 ?>
 
 <div id="info-window"><button class="close" onClick='$("#info-window").fadeOut("fast");'>&times;</button><div id="info-window-text"></div></div>
-<div id="frame">
+<div class="frame">
     <div class="section">
-    <p class="totals"><b>Total:</b> <?php foreach($host_summary as $state => $count) { echo "<span class='{$nagios_host_status_colour[$state]}'>{$count}</span> "; } ?></p>
+      <div class="header">
+        <h3>Host status</h3>
+        <p class="totals"><b>Total:</b> <?php foreach($host_summary as $state => $count) { echo "<span class='{$nagios_host_status_colour[$state]}'>{$count}</span> "; } ?></p>
+      </div>
 <?php if (count($down_hosts) > 0) { ?>
     <table id="broken_hosts" class="widetable">
     <tr><th>Hostname</th><th width="150px">State</th><th>Duration</th><th>Attempts</th><th>Detail</th></tr>
@@ -225,10 +228,12 @@ if (count($known_hosts) > 0) {
     </div>
 </div>
 
-<div id="frame">
+<div class="frame">
     <div class="section">
-    <h3 class='left'>Service problems</h3>
-    <p class="totals"><b>Total:</b> <?php foreach($service_summary as $state => $count) { echo "<span class='{$nagios_service_status_colour[$state]}'>{$count}</span> "; } ?></p>
+      <div class="header">
+        <h3>Service status</h3>
+        <p class="totals"><b>Total:</b> <?php foreach($service_summary as $state => $count) { echo "<span class='{$nagios_service_status_colour[$state]}'>{$count}</span> "; } ?></p>
+    </div>
 <?php if (count($broken_services) > 0) { ?>
     <table class="widetable" id="broken_services">
     <tr><th width="30%">Hostname</th><th width="40%">Service</th><th width="15%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
@@ -247,7 +252,7 @@ if (count($known_hosts) > 0) {
 ?>
     </table>
 <?php } else { ?>
-    <table class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
+    <div class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
 <?php } 
 
 if (count($known_services) > 0) { ?>
