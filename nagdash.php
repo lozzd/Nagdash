@@ -4,6 +4,10 @@ error_reporting(E_ALL ^ E_NOTICE);
 require_once 'config.php';
 require_once 'timeago.php';
 
+if (!function_exists('curl_init')) {
+  die("ERROR: The PHP curl extension must be installed for Nagdash to function");
+}
+
 $nagios_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
 $nagios_service_status = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN");
 $nagios_host_status_colour = array(0 => "status_green", 1 => "status_red", 2 => "status_yellow");
