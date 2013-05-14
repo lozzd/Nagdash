@@ -59,9 +59,11 @@ foreach ($nagios_hosts as $host) {
         if (is_string($host_state)) {
             $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
         } else {
-            // Add the tag
-            foreach ($host_state as $this_host => $null) {
-                $host_state[$this_host]['tag'] = $host['tag'];
+            if (count($nagios_hosts) > 1) {
+              // Add the tag if there's more than one host
+              foreach ($host_state as $this_host => $null) {
+                  $host_state[$this_host]['tag'] = $host['tag'];
+              }
             }
             $state += (array) $host_state;
         }
