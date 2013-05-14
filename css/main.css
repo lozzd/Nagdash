@@ -1,5 +1,6 @@
+body                { 
+    font-family: "HelveticaNeue-Medium", Helvetica, Arial, sans-serif; margin: 5px}
 h3                  { margin-top: 3px; margin-bottom: 3px; font-size: 1.5em }
-body                { font-family: "HelveticaNeue-Medium", Helvetica, Arial, sans-serif; margin: 10px; margin-top: 0px }
 table,td            { border: none; padding: 2px; border-spacing: 2px; font-size: 1.1em }
 table               { border: 1px solid #c6c6c6; background-color: #F0F0F0; border-collapse: separate;.
                         *border-collapse: collapse; -webkit-border-radius: 4px;
