@@ -86,7 +86,8 @@ deep_ksort($state);
 <head>
     <title>Nagios Dashboard</title>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="blinkftw.css">
+    <link rel="stylesheet" href="css/blinkftw.css">
+    <link rel="stylesheet" href="css/main.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
     <script>
@@ -96,39 +97,10 @@ deep_ksort($state);
     }
     </script>
     <style type="text/css">
-    h3                  { margin-top: 3px; margin-bottom: 3px; font-size: 1.5em }
-    body                { font-family: "HelveticaNeue-Medium", Helvetica, Arial, sans-serif; margin: 10px; margin-top: 0px }
-    table,td            { border: none; padding: 2px; border-spacing: 2px; font-size: 1.1em }
-    table               { border: 1px solid #c6c6c6; background-color: #F0F0F0; border-collapse: separate; 
-                            *border-collapse: collapse; -webkit-border-radius: 4px;
-                            -moz-border-radius: 4px; border-radius: 4px; }
-    th                  { border: 1px black solid; background-color: #D8D8D8 }
-    .widetable          { width: 99%; clear: both }
-    .bold               { font-weight: bold; }
-    .status_green       { background-color: #269926; color: white; padding: 3px }
-    .status_red         { background-color: #FF4040; color: white; padding: 3px }
-    .status_yellow      { background-color: #FFDE40; color: black; padding: 3px }
-    .status_grey        { background-color: #444444; color: white; padding: 3px }
-    .known_hosts        { background-color: lightgrey; color: black }
-    .known_hosts_desc   { color: #686868 }
-    .desc               { font-size: 0.8em }
-    #info-window-text   { padding: 30px; vertical-align: middle }
-<?php foreach ($nagios_hosts as $host) { echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n"; } ?>
-    .tag                { font-size: 0.6em; color: white; padding: 4px; -webkit-border-radius: 5px; }
-    .tag_label          { color: white; padding-top: 10px !important; padding-bottom: 10px; padding-right: 30px; padding-left: 30px; -webkit-border-radius: 5px; }
-    .left               { float: left}
-    .totals             { text-align: right; right: 10px; padding: 5px; border: 1px #848484 solid; position: absolute; background: #F0F0F0; 
-                            -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; margin-top: 5px; margin-bottom: 5px; }
-    table#broken_services tr td span.controls { display: none; float: right }
-    table#broken_hosts    tr td span.controls { display: none; float: right }
-    table#broken_services tr:hover td span.controls { display:inline-block; }
-    table#broken_hosts    tr:hover td span.controls { display:inline-block; }
-    #info-window        { display: none; position: absolute; top: 50%; width: 400px; text-align: center; left: 50%; margin-left: -200px;
-                          border: 1px #848484 solid; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; margin-top: -75px;
-                          background: #F0F0F0; font-family: "HelveticaNeue-Medium", Helvetica, Arial, sans-serif; padding: 20px }
-    .known_service      { font-size: 1em }
+      <?php foreach ($nagios_hosts as $host) { 
+          echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n"; 
+      } ?>
     </style>
-
 </head>
 
 <body>
