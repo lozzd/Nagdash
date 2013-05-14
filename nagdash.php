@@ -70,6 +70,11 @@ foreach ($nagios_hosts as $host) {
     }
 }
 
+if (isset($mock_state_file)) {
+  $data = json_decode(file_get_contents($mock_state_file), true);
+  $state = $data['content'];
+}
+
 // Sort the array alphabetically by hostname. 
 deep_ksort($state);
 
