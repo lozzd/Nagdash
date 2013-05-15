@@ -1,3 +1,9 @@
+<?php
+error_reporting(E_ALL ^ E_NOTICE);
+include_once('config.php');
+$unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
+if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
+?>
 <html>
 <head>
 <title>Nagios Dashboard</title>
@@ -28,18 +34,16 @@ $(document).keypress("s", function(e) {
     $("#settings_modal").modal();
 });
 </script>
+<style type="text/css">
+  <?php foreach ($nagios_hosts as $host) { 
+        echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n"; 
+  } ?>
+</style>
 </head>
 <body>
-<div id="spinner"><h3><img src="ajax-loader.gif" align="absmiddle"> Refreshing...</h3></div>
-<div id="nagioscontainer"></div>
-<?php
-error_reporting(E_ALL ^ E_NOTICE);
-include_once('config.php');
-$unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
-if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
-echo build_settings_dialog($nagios_hosts, $unwanted_hosts);
-
-?>
+  <div id="spinner"><h3><img src="ajax-loader.gif" align="absmiddle"> Refreshing...</h3></div>
+  <div id="nagioscontainer"></div>
+  <?=build_settings_dialog($nagios_hosts, $unwanted_hosts) ?>
 </body>
 </html>
 
