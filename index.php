@@ -9,7 +9,13 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/blinkftw.css">
+<link rel="stylesheet" href="css/main.css">
 <script>
+  function showInfo(show_data) {
+      $("#info-window").fadeIn("fast");
+      $("#info-window-text").empty().append(show_data);
+  }
 $(document).ready(function() {
     $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
     var refreshId = setInterval(function() {
@@ -35,6 +41,7 @@ echo build_settings_dialog($nagios_hosts, $unwanted_hosts);
 
 ?>
 </body>
+</html>
 
 
 <?php

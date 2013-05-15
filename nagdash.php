@@ -79,32 +79,6 @@ if (isset($mock_state_file)) {
 deep_ksort($state);
 
 // At this point, the data collection is completed. 
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Nagios Dashboard</title>
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/blinkftw.css">
-    <link rel="stylesheet" href="css/main.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
-    <script>
-    function showInfo(show_data) {
-        $("#info-window").fadeIn("fast");
-        $("#info-window-text").empty().append(show_data);
-    }
-    </script>
-    <style type="text/css">
-      <?php foreach ($nagios_hosts as $host) { 
-          echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n"; 
-      } ?>
-    </style>
-</head>
-
-<body>
-<?php
 
 if (count($errors) > 0) {
     foreach ($errors as $error) {
@@ -252,7 +226,7 @@ if (count($known_hosts) > 0) {
 ?>
     </table>
 <?php } else { ?>
-    <div class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
+    <table class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
 <?php } 
 
 if (count($known_services) > 0) { ?>
@@ -289,10 +263,6 @@ foreach ($curl_stats as $server => $server_stats) {
 }
 
 ?>
-
-</body>
-</html>
-
 <?php
 
 
