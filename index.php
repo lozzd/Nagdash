@@ -19,17 +19,19 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
       $("#info-window").fadeIn("fast");
       $("#info-window-text").empty().append(show_data);
   }
-$(document).ready(function() {
-    $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
-    var refreshId = setInterval(function() {
-        $("#spinner").fadeIn("fast");
-        $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
-    }, 20000);
-    $.ajaxSetup({ cache: false });
-});
-$(document).keypress("s", function(e) {
-    $("#settings_modal").modal();
-});
+  $(document).ready(function() {
+      $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
+      var refreshId = setInterval(function() {
+          <?if ($show_refresh_spinner) {?>
+          $("#spinner").fadeIn("fast");
+          <? }?>
+          $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
+      }, 20000);
+      $.ajaxSetup({ cache: false });
+  });
+  $(document).keypress("s", function(e) {
+      $("#settings_modal").modal();
+  });
 </script>
 <style type="text/css">
   <?php foreach ($nagios_hosts as $host) { 
