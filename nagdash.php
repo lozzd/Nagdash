@@ -156,6 +156,8 @@ foreach($state as $hostname => $host_detail) {
         }
     } 
 }
+ksort($host_summary);
+ksort($service_summary);
 ?>
 
 <div id="info-window"><button class="close" onClick='$("#info-window").fadeOut("fast");'>&times;</button><div id="info-window-text"></div></div>
