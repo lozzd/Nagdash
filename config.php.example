@@ -16,4 +16,9 @@ $filter = "";
 // Default downtime duration, measured in seconds, for scheduling downtime via the Nagdash interface.  
 $duration = 60*60;
 
+$show_refresh_spinner = true;
+
+# For testing, uncomment this for some errors:
+//$mock_state_file = './test_data/state';
+
 // End Config
