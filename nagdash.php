@@ -110,6 +110,8 @@ deep_ksort($state);
                             -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; margin-top: 5px; margin-bottom: 5px; }
     table#broken_services tr td span.controls { display: none; float: right }
     table#broken_hosts    tr td span.controls { display: none; float: right }
+    table#broken_services tr td span.detail { display: none;}
+    table#broken_services tr:hover td span.detail { display: block; font-size: 0.6em }
     table#broken_services tr:hover td span.controls { display:inline-block; }
     table#broken_hosts    tr:hover td span.controls { display:inline-block; }
     #info-window        { display: none; position: absolute; top: 50%; width: 400px; text-align: center; left: 50%; margin-left: -200px;
@@ -183,6 +185,7 @@ foreach($state as $hostname => $host_detail) {
                     "service_name" => $service_name,
                     "service_state" => $service_detail['current_state'],
                     "duration" => timeago($service_detail['last_state_change'], null, null, false),
+                    "last_state_change" => $service_detail['last_state_change'],
                     "detail" => $service_detail['plugin_output'],
                     "current_attempt" => $service_detail['current_attempt'],
                     "max_attempts" => $service_detail['max_attempts'],
@@ -225,7 +228,6 @@ foreach($state as $hostname => $host_detail) {
 <?php } else { ?>
     <table class="widetable status_green"><tr><td><b>All hosts OK</b></td></tr></table>
 <?php 
-
 }
 if (count($known_hosts) > 0) {
     foreach ($known_hosts as $this_host) {
@@ -250,12 +252,13 @@ if (count($known_hosts) > 0) {
     <table class="widetable" id="broken_services">
     <tr><th width="30%">Hostname</th><th width="40%">Service</th><th width="15%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
+    usort($broken_services,'cmp_last_state_change');
     foreach($broken_services as $service) {
         if ($service['is_hard']) { $soft_tag = "</blink>"; $blink_tag = "<blink>"; } else { $soft_tag = "(soft)"; $blink_tag = ""; }
         $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
         echo "<td>{$service['hostname']} <span class='tag tag_{$service['tag']}'>{$service['tag']}</span> <span class='controls'>{$controls}</span></td>";
-        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]}'>{$service['service_name']}</td>";
+        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]}'>{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
         echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$blink_tag}{$nagios_service_status[$service['service_state']]} {$soft_tag}</td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
@@ -267,11 +270,13 @@ if (count($known_hosts) > 0) {
     <table class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
 <?php } 
 
+usort($known_services,'cmp_last_state_change');
 if (count($known_services) > 0) { ?>
     <h4>Known Service Problems</h4>
     <table class="widetable known_service" id="known_services">
     <tr><th width="30%">Hostname</th><th width="37%">Service</th><th width="18%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
-<?php 
+<?php
+    
     foreach($known_services as $service) {
         if ($service['is_ack']) $status_text = "ack";
         if ($service['is_downtime']) $status_text = "downtime {$service['downtime_remaining']}";
@@ -318,17 +323,25 @@ function deep_ksort(&$arr) {
     } 
 } 
 
+function cmp_last_state_change($a,$b) {
+    if ($a['last_state_change'] == $b['last_state_change']) return 0;
+    return ($a['last_state_change'] > $b['last_state_change']) ? -1 : 1;
+}
+
 function build_controls($tag, $host, $service) {
     $controls = '<div class="btn-group">';
     $controls .= "<a href='#' onClick=\"$.post('do_action.php', { 
         nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'ack' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
             <i class='icon-check'></i> Ack </a>";
-    $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
-        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
-            <i class='icon-volume-up'></i> Unsilence</a>";
+    if ($service['is_enabled']) {
     $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
         nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
             <i class='icon-volume-off'></i> Silence</a>";
+    } else {
+    $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
+            <i class='icon-volume-up'></i> Unsilence</a>";
+    }
     $controls .= '
         <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="icon-time"></i> Downtime <span class="caret"></span></a>
