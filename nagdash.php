@@ -290,14 +290,14 @@ function build_controls($tag, $host, $service) {
     $controls .= "<a href='#' onClick=\"$.post('do_action.php', { 
         nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'ack' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
             <i class='icon-check'></i> Ack </a>";
-    if ($service['is_enabled']) {
-    $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
-        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
-            <i class='icon-volume-off'></i> Silence</a>";
+    if (isset($service['is_enabled'])) {
+        $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+                nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
+                    <i class='icon-volume-off'></i> Silence</a>";
     } else {
-    $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
-        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
-            <i class='icon-volume-up'></i> Unsilence</a>";
+        $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+                nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
+                    <i class='icon-volume-up'></i> Unsilence</a>";
     }
     $controls .= '
         <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
