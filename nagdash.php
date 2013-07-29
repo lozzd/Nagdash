@@ -74,10 +74,6 @@ deep_ksort($state);
 <html>
 <head>
     <title>Nagios Dashboard</title>
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="blinkftw.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
     <script>
     function showInfo(show_data) {
         $("#info-window").fadeIn("fast");
