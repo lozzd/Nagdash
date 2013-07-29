@@ -34,6 +34,8 @@ div.header .totals          { float: right }
                       margin-top: 5px; margin-bottom: 5px; }
 table#broken_services tr td span.controls { display: none; float: right }
 table#broken_hosts    tr td span.controls { display: none; float: right }
+table#broken_services tr td span.detail { display: none;}
+table#broken_services tr:hover td span.detail { display: block; font-size: 0.6em }
 table#broken_services tr:hover td span.controls { display:inline-block; }
 table#broken_hosts    tr:hover td span.controls { display:inline-block; }
 #info-window        { display: none; position: absolute; top: 50%; width: 400px; text-align: center; left: 50%; margin-left: -200px;
