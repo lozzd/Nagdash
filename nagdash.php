@@ -14,6 +14,8 @@ $nagios_service_status_colour = array(0 => "status_green", 1 => "status_yellow",
 
 $nagios_toggle_status = array(0 => "disabled", 1 => "enabled");
 
+$sort_by_time = ( isset($sort_by_time) && $sort_by_time ) ? true : false;
+
 $errors = array();
 $state = array();
 $host_summary = array();
@@ -213,7 +215,9 @@ if (count($known_hosts) > 0) {
     <table class="widetable" id="broken_services">
     <tr><th width="30%">Hostname</th><th width="40%">Service</th><th width="15%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
-    usort($broken_services,'cmp_last_state_change');
+    if ($sort_by_time) {
+        usort($broken_services,'cmp_last_state_change');
+    }
     foreach($broken_services as $service) {
         if ($service['is_hard']) { $soft_tag = "</blink>"; $blink_tag = "<blink>"; } else { $soft_tag = "(soft)"; $blink_tag = ""; }
         $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
@@ -231,7 +235,10 @@ if (count($known_hosts) > 0) {
     <table class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
 <?php } 
 
-usort($known_services,'cmp_last_state_change');
+if ($sort_by_time) {
+    usort($known_services,'cmp_last_state_change');
+}
+
 if (count($known_services) > 0) { ?>
     <h4>Known Service Problems</h4>
     <table class="widetable known_service" id="known_services">
