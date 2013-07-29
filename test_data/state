@@ -1,0 +1,369 @@
+{
+    "content": {
+        "host1": {
+            "active_checks_enabled": "1", 
+            "comments": {}, 
+            "current_attempt": "1", 
+            "current_state": "1", 
+            "downtimes": {}, 
+            "last_check": "1368548183", 
+            "last_hard_state": "0", 
+            "last_notification": "0", 
+            "last_state_change": "1357834569", 
+            "max_attempts": "10", 
+            "notifications_enabled": "1", 
+            "performance_data": {
+                "pl": "0%", 
+                "rta": "0.547000ms"
+            }, 
+            "plugin_output": "PING OK - Packet loss = 0%, RTA = 0.55 ms", 
+            "problem_has_been_acknowledged": "0", 
+            "scheduled_downtime_depth": "0", 
+            "services": {
+                "CPU usage": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368548197", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1368440497", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {}, 
+                    "plugin_output": "CPU OK: 81 processes", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "Disk Space": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368547952", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1368440252", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "/": "4291MB"
+                    }, 
+                    "plugin_output": "DISK OK - free space: / 5938 MB (58% inode=99%):", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "Disk Space /": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368547952", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1357834647", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "/": "4291MB"
+                    }, 
+                    "plugin_output": "DISK OK - free space: / 5938 MB (58% inode=99%):", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "NTP": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368548099", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1367833400", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "offset": "0.002497s"
+                    }, 
+                    "plugin_output": "NTP OK: Offset 0.002497 secs", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "PING": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368547980", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1357834724", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "pl": "0%", 
+                        "rta": "0.651000ms"
+                    }, 
+                    "plugin_output": "PING OK - Packet loss = 0%, RTA = 0.65 ms", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "SSH": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368548099", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1363311147", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {}, 
+                    "plugin_output": "SSH OK - OpenSSH_5.5p1 Debian-6+squeeze2 (protocol 2.0)", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }
+            }
+        }, 
+        "host3": {
+            "active_checks_enabled": "1", 
+            "comments": {}, 
+            "current_attempt": "3", 
+            "current_state": "1", 
+            "downtimes": {}, 
+            "last_check": "1368548183", 
+            "last_hard_state": "0", 
+            "last_notification": "0", 
+            "last_state_change": "1357834569", 
+            "max_attempts": "10", 
+            "notifications_enabled": "1", 
+            "performance_data": {
+                "pl": "0%", 
+                "rta": "0.547000ms"
+            }, 
+            "plugin_output": "PING OK - Packet loss = 0%, RTA = 0.55 ms", 
+            "problem_has_been_acknowledged": "1", 
+            "scheduled_downtime_depth": "0", 
+            "services": {
+                "CPU usage": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368548197", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1368440497", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {}, 
+                    "plugin_output": "CPU OK: 81 processes", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "Disk Space": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368547952", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1368440252", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "/": "4291MB"
+                    }, 
+                    "plugin_output": "DISK OK - free space: / 5938 MB (58% inode=99%):", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "Disk Space /": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368547952", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1357834647", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "/": "4291MB"
+                    }, 
+                    "plugin_output": "DISK OK - free space: / 5938 MB (58% inode=99%):", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "NTP": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368548099", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1367833400", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "offset": "0.002497s"
+                    }, 
+                    "plugin_output": "NTP OK: Offset 0.002497 secs", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "PING": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368547980", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1357834724", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "pl": "0%", 
+                        "rta": "0.651000ms"
+                    }, 
+                    "plugin_output": "PING OK - Packet loss = 0%, RTA = 0.65 ms", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "SSH": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368548099", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1363311147", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {}, 
+                    "plugin_output": "SSH OK - OpenSSH_5.5p1 Debian-6+squeeze2 (protocol 2.0)", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }
+            }
+        }, 
+
+        "host2": {
+            "active_checks_enabled": "1", 
+            "comments": {}, 
+            "current_attempt": "1", 
+            "current_state": "0", 
+            "downtimes": {}, 
+            "last_check": "1368548033", 
+            "last_hard_state": "0", 
+            "last_notification": "0", 
+            "last_state_change": "1357834571", 
+            "max_attempts": "10", 
+            "notifications_enabled": "1", 
+            "performance_data": {
+                "pl": "0%", 
+                "rta": "0.519000ms"
+            }, 
+            "plugin_output": "PING OK - Packet loss = 0%, RTA = 0.52 ms", 
+            "problem_has_been_acknowledged": "0", 
+            "scheduled_downtime_depth": "0", 
+            "services": {
+                "Disk Space /": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368548099", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1359564206", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "/": "3471MB"
+                    }, 
+                    "plugin_output": "DISK OK - free space: / 6758 MB (66% inode=99%):", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "NTP": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "1", 
+                    "downtimes": {}, 
+                    "last_check": "1368548159", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1359880348", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "offset": "0.000159s"
+                    }, 
+                    "plugin_output": "NTP OK: Offset 0.000159 secs", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "PING": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "0", 
+                    "downtimes": {}, 
+                    "last_check": "1368547980", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1357834610", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {
+                        "pl": "0%", 
+                        "rta": "0.486000ms"
+                    }, 
+                    "plugin_output": "PING OK - Packet loss = 0%, RTA = 0.49 ms", 
+                    "problem_has_been_acknowledged": "0", 
+                    "scheduled_downtime_depth": "0"
+                }, 
+                "SSH": {
+                    "active_checks_enabled": "1", 
+                    "comments": {}, 
+                    "current_attempt": "1", 
+                    "current_state": "1", 
+                    "downtimes": {}, 
+                    "last_check": "1368548161", 
+                    "last_hard_state": "0", 
+                    "last_notification": "0", 
+                    "last_state_change": "1357834687", 
+                    "max_attempts": "3", 
+                    "notifications_enabled": "1", 
+                    "performance_data": {}, 
+                    "plugin_output": "SSH OK - OpenSSH_5.5p1 Debian-6+squeeze2 (protocol 2.0)", 
+                    "problem_has_been_acknowledged": "1", 
+                    "scheduled_downtime_depth": "0"
+                }
+            }
+        }
+    },
+    "success": true
+}
