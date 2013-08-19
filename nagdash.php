@@ -295,7 +295,7 @@ function build_controls($tag, $host, $service) {
     $controls .= "<a href='#' onClick=\"$.post('do_action.php', { 
         nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'ack' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
             <i class='icon-check'></i> Ack </a>";
-    if (isset($service['is_enabled'])) {
+    if (!isset($service['is_enabled'])) {
         $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
                 nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
                     <i class='icon-volume-off'></i> Silence</a>";
