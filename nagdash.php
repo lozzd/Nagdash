@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 require_once 'config.php';
+require_once 'utils.php';
 require_once 'timeago.php';
 
 if (!function_exists('curl_init')) {
@@ -60,11 +61,8 @@ foreach ($nagios_hosts as $host) {
         if (is_string($host_state)) {
             $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
         } else {
-            if (count($nagios_hosts) > 1) {
-              // Add the tag if there's more than one host
-              foreach ($host_state as $this_host => $null) {
-                  $host_state[$this_host]['tag'] = $host['tag'];
-              }
+            foreach ($host_state as $this_host => $null) {
+                $host_state[$this_host]['tag'] = $host['tag'];
             }
             $state += (array) $host_state;
         }
@@ -177,7 +175,7 @@ ksort($service_summary);
     foreach($down_hosts as $host) {
         $controls = build_controls($host['tag'], $host['hostname'], '');
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
-        echo "<td>{$host['hostname']} <span class='tag tag_{$host['tag']}'>{$host['tag']}</span> <span class='controls'>{$controls}</span></td>";
+        echo "<td>{$host['hostname']} " . print_tag($host['tag']) . " <span class='controls'>{$controls}</span></td>";
         echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>"; 
         echo "<td>{$host['duration']}</td>";
         echo "<td>{$host['current_attempt']}/{$host['max_attempts']}</td>";
@@ -195,7 +193,7 @@ if (count($known_hosts) > 0) {
         if ($this_host['is_ack']) $status_text = "ack";
         if ($this_host['is_downtime']) $status_text = "downtime";
         if (!$this_host['is_enabled']) $status_text = "disabled";
-        $known_host_list[] = "{$this_host['hostname']} <span class='tag tag_{$this_host['tag']}'>{$this_host['tag']}</span> <span class='known_hosts_desc'>({$status_text} - {$this_host['duration']})</span>";
+        $known_host_list[] = "{$this_host['hostname']} " . print_tag($this_host['tag']) . " <span class='known_hosts_desc'>({$status_text} - {$this_host['duration']})</span>";
     } 
     $known_host_list_complete = implode(" &bull; ", $known_host_list);
     echo "<table class='widetable known_hosts'><tr><td><b>Known Problem Hosts: </b> {$known_host_list_complete}</td></tr></table>";
@@ -222,7 +220,7 @@ if (count($known_hosts) > 0) {
         if ($service['is_hard']) { $soft_tag = "</blink>"; $blink_tag = "<blink>"; } else { $soft_tag = "(soft)"; $blink_tag = ""; }
         $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
-        echo "<td>{$service['hostname']} <span class='tag tag_{$service['tag']}'>{$service['tag']}</span> <span class='controls'>{$controls}</span></td>";
+        echo "<td>{$service['hostname']} " . print_tag($service['tag']) . " <span class='controls'>{$controls}</span></td>";
         echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]}'>{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
         echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$blink_tag}{$nagios_service_status[$service['service_state']]} {$soft_tag}</td>";
         echo "<td>{$service['duration']}</td>";
@@ -250,7 +248,7 @@ if (count($known_services) > 0) { ?>
         if ($service['is_downtime']) $status_text = "downtime {$service['downtime_remaining']}";
         if (!$service['is_enabled']) $status_text = "disabled";
         echo "<tr class='known_service'>";
-        echo "<td>{$service['hostname']} <span class='tag tag_{$service['tag']}'>{$service['tag']}</td>";
+        echo "<td>{$service['hostname']} " . print_tag($service['tag']) . "</td>";
         echo "<td>{$service['service_name']}</td>";
         echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$nagios_service_status[$service['service_state']]} ({$status_text})</td>";
         echo "<td>{$service['duration']}</td>";

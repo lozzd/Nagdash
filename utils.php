@@ -28,4 +28,13 @@ function build_settings_dialog($nagios_hosts, $unwanted_hosts) {
     return $html;
 }
 
+function print_tag($tag_name) {
+    global $nagios_hosts;
+    if (count($nagios_hosts) > 1) {
+        return "<span class='tag tag_{$tag_name}'>{$tag_name}</span>";
+    } else {
+        return false;
+    }
+}
+
 ?>
