@@ -11,6 +11,8 @@ if (!isset($_POST['nag_host'])) {
     $service = ($_POST['service']) ? $_POST['service'] : null;
     $action = $_POST['action'];
 
+    $author = function_exists("nagdash_get_user") ? nagdash_get_user() : "Nagdash";
+
     switch ($action) {
     case "ack":
         $method = "acknowledge_problem";
@@ -35,7 +37,7 @@ if (!isset($_POST['nag_host'])) {
                 $nagios_url = $host['protocol'] . "://" . $host['hostname'] . ":" . $host['port'] . "/" . $method;
             }
         }
-        $payload = json_encode(array("host" => $hostname, "service" => $service, "comment" => "{$method} from Nagdash", "author" => "Nagdash", "duration" => $duration));
+        $payload = json_encode(array("host" => $hostname, "service" => $service, "comment" => "{$method} from Nagdash", "author" => $author, "duration" => $duration));
         $params = array('http' =>
             array(
                 'method' => 'POST',
@@ -48,7 +50,7 @@ if (!isset($_POST['nag_host'])) {
             $error = error_get_last();
             echo "Command {$method} failed! <pre>{$error}</pre>";
         } else {
-            $return = json_decode($result); 
+            $return = json_decode($result);
             if ($return->success) {
                 $service = (isset($service)) ? "-> {$service}" : null;
                 echo "Command {$method} succeeded on {$hostname} {$service}";
