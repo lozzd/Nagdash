@@ -55,7 +55,7 @@ Live settings screen (accessed using the 's' key) lets you choose which Nagios i
 
 ## Prerequisites
 * A webserver
-* PHP 4 (or higher), including the curl extensions for PHP
+* PHP 4 (or higher), including the curl extensions for PHP, and short_open_tags enabled
 * [Nagois-api](https://github.com/xb95/nagios-api) running on one or more Nagios servers
 * A big screen to show Nagdash off
 
