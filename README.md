@@ -20,35 +20,35 @@ Naglite2, the first iteration, was dependant on parsing the status.dat file that
 
 ## Screenshots
 
-![On a monitor](http://laur.ie/grb/83-5gso6mhh4wgcw.png) 
+![On a monitor](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/01_on-a-monitor.png) 
 
 On a monitor
 
-![Easy to read tags](http://laur.ie/grb/4f-ss4m43iigwksw.png)
+![Easy to read tags](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/02_easy-to-read-tags.png)
 
 Easy to read tags
 
-![Service states](http://laur.ie/grb/7s-pdst1xumos8ww.png)
+![Service states](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/03_service-states.png)
 
 Service states
 
-![Easy to read duration/attempts](http://laur.ie/grb/e6-gu4hhky1kc8w4.png)
+![Easy to read duration/attempts](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/04_easy-to-read-duration-attempts.png)
 
 Easy to read duration/attempts
 
-![Reminder of all the 'known' issues](http://laur.ie/grb/86-sp4nbkl5c8wks.png)
+![Reminder of all the 'known' issues](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/05_reminder-of-all-the-known-issues.png)
 
 Reminder of all the 'known' issues
 
-![Hover over the row for one click service actions](http://laur.ie/grb/68-olkvjqfh0c4ss.png)
+![Hover over the row for one click service actions](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/06_click-service-actions.png)
 
 Hover next to a service for one click service actions. Schedule downtime (choose length), enable/disable notifications, and acknowledge service problems directly from Nagdash.
 
-![Easy config](http://laur.ie/grb/ao-drdbihxlc8oog.png)
+![Easy config](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/07_easy-configuration.png)
 
 Easy configuration
 
-![Choose your instances](http://laur.ie/grb/eb-525nfz2144ksw.png)
+![Choose your instances](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/08_live-settings-screen.png)
 
 Live settings screen (accessed using the 's' key) lets you choose which Nagios instances are important to you on this copy of Nagdash. 
 
@@ -71,7 +71,7 @@ The configuration file is fairly simple at this point, but here's an explanation
 
 * Nagios hosts array
 
-![Nagios hosts array](http://laur.ie/grb/ao-drdbihxlc8oog.png)
+![Nagios hosts array](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/09_nagios-hosts-array.png)
 
     * Hostname: The hostname or IP address of a server running the nagios-api
     * Port: The port the nagios-api instance is running on
