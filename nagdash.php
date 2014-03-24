@@ -211,18 +211,17 @@ if (count($known_hosts) > 0) {
     </div>
 <?php if (count($broken_services) > 0) { ?>
     <table class="widetable" id="broken_services">
-    <tr><th width="30%">Hostname</th><th width="40%">Service</th><th width="15%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
+    <tr><th width="30%">Hostname</th><th width="50%">Service</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
     if ($sort_by_time) {
         usort($broken_services,'cmp_last_state_change');
     }
     foreach($broken_services as $service) {
-        if ($service['is_hard']) { $soft_tag = "</blink>"; $blink_tag = "<blink>"; } else { $soft_tag = "(soft)"; $blink_tag = ""; }
+        if ($service['is_hard']) { $soft_style = ""; } else { $soft_style = "status_soft";}
         $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
         echo "<td>{$service['hostname']} " . print_tag($service['tag']) . " <span class='controls'>{$controls}</span></td>";
-        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]}'>{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
-        echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$blink_tag}{$nagios_service_status[$service['service_state']]} {$soft_tag}</td>";
+        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]} {$soft_style}'>{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
         echo "</tr>";
