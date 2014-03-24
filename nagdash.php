@@ -217,11 +217,12 @@ if (count($known_hosts) > 0) {
         usort($broken_services,'cmp_last_state_change');
     }
     foreach($broken_services as $service) {
-        if ($service['is_hard']) { $soft_style = ""; } else { $soft_style = "status_soft";}
+        $soft_style = ($service['is_hard']) ? "" : "status_soft";
+        $blink_tag = ($service['is_hard'] && $enable_blinking) ? "<blink>" : "";
         $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
         echo "<td>{$service['hostname']} " . print_tag($service['tag']) . " <span class='controls'>{$controls}</span></td>";
-        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]} {$soft_style}'>{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
+        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]} {$soft_style}'>{$blink_tag}{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
         echo "</tr>";

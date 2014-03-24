@@ -16,12 +16,15 @@ $filter = "";
 // Default downtime duration, measured in seconds, for scheduling downtime via the Nagdash interface.  
 $duration = 60*60;
 
-// Show the floating spinner when Nagdash is being refreshed. 
+// Show the floating spinner when Nagdash is being refreshed.
 $show_refresh_spinner = true;
 
-// sort_by_time: Set this to true to sort by the last state change, e.g. how long the service has been broken. 
-// If set to false, leave to default sorting by hostname instead. 
+// sort_by_time: Set this to true to sort by the last state change, e.g. how long the service has been broken.
+// If set to false, leave to default sorting by hostname instead.
 $sort_by_time = false;
+
+// Enables the <blink> tag on HARD service notifications. Enable if you want more eye-catching goodness
+$enable_blinking = false;
 
 # For testing, uncomment this for some errors:
 //$mock_state_file = './test_data/state';
