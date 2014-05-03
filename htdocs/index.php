@@ -42,6 +42,6 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 <body>
   <div id="spinner"><h3><img src="images/ajax-loader.gif" align="absmiddle"> Refreshing...</h3></div>
   <div id="nagioscontainer"></div>
-  <?=build_settings_dialog($nagios_hosts, $unwanted_hosts) ?>
+  <?=NagdashHelpers::build_settings_dialog($nagios_hosts, $unwanted_hosts) ?>
 </body>
 </html>
