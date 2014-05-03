@@ -9,9 +9,12 @@ if (!function_exists('curl_init')) {
 }
 
 $nagios_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-$nagios_service_status = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN");
-$nagios_host_status_colour = array(0 => "status_green", 1 => "status_red", 2 => "status_yellow");
-$nagios_service_status_colour = array(0 => "status_green", 1 => "status_yellow", 2 => "status_red", 3 => "status_grey");
+$nagios_service_status 
+    = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN");
+$nagios_host_status_colour 
+    = array(0 => "status_green", 1 => "status_red", 2 => "status_yellow");
+$nagios_service_status_colour 
+    = array(0 => "status_green", 1 => "status_yellow", 2 => "status_red", 3 => "status_grey");
 
 $nagios_toggle_status = array(0 => "disabled", 1 => "enabled");
 
@@ -27,26 +30,107 @@ $known_services = array();
 $broken_services = array();
 $curl_stats = array();
 
-// Function that does the dirty to connect to the Nagios API
-function connectHost($hostname, $port, $protocol) {
+$api_cols = [
+    'livestatus' => [
+        'state' => 'state',
+        'ack' => 'acknowledged',
+        'max_attempts' => 'max_check_attempts',
+        'service_name' => 'description',
+        'host_name' => 'host_name',
+    ],
+    'nagios-api' => [
+        'state' => 'current_state',
+        'ack' => 'problem_has_been_acknowledged',
+        'max_attempts' => 'max_attempts',
+        'service_name' => 'service_name',
+        'host_name' => 'name',
+    ]
+];
 
+
+
+function fetch_json($hostname,$port,$protocol,$url) {
     global $curl_stats;
 
-    $ch = curl_init("{$protocol}://{$hostname}:{$port}/state");
+    $ch = curl_init("$protocol://$hostname:$port$url");
     curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    if (!$json = curl_exec($ch)) {
+
+    $json = curl_exec($ch);
+
+    $info = curl_getinfo($ch);
+
+    if (curl_errno($ch)) {
         return "<pre>Attempt to hit API failed, sorry. Curl said: " . curl_error($ch) . "</pre>";
+    } elseif ($info['http_code'] != 200) {
+        return "<pre>Attempt to hit API failed, sorry. Curl said: HTTP Status {$info['http_code']} </pre>";
     } else {
         $curl_stats["$hostname:$port"] = curl_getinfo($ch);
     }
-    curl_close($ch);
 
-    if (!$state = json_decode($json, true)) {
-        return "Attempt to hit API failed, sorry (JSON decode failed)";
+    curl_close($ch);
+    return json_decode($json, true);
+}
+
+function fetch_state_livestatus($hostname, $port, $protocol) {
+    $state = fetch_json(
+        $hostname, $port, $protocol,
+        "/nagios/livestatus/index.php/hosts?" .
+        "Columns=name,state,acknowledged,last_state_change,downtimes"
+    );
+
+    if (is_string($state)){
+        return $state;
     }
-    $curl_stats["$hostname:$port"]['objects'] = count($state['content']);
-    return $state['content'];
+
+    $curl_stats["$hostname:$port"]['objects'] = count($state);
+    $munge = [];
+
+    foreach ($state as $host) {
+        $host['services'] = [];
+        $munge[$host['name']] = $host;
+    }
+    $state = $munge;
+
+    $services = fetch_json(
+        $hostname, $port, $protocol,
+        "/nagios/livestatus/index.php/services?" . 
+        "Columns=description,host_name,plugin_output,notifications_enabled," .
+        "downtimes,scheduled_downtime_depth,state,last_state_change," .
+        "current_attempt,max_check_attempts,acknowledged"
+    );
+
+    foreach ($services as $service) {
+        $hostname = $service['host_name'];
+        if ($state[$hostname]) {
+            $state[$hostname]['services'][$service['description']] = $service;
+        }
+    }
+
+    return $state;
+}
+
+function fetch_state_nagios_api($hostname, $port, $protocol) {
+    $response =  fetch_json($hostname, $port, $protocol, "/state");
+    return $response['content'];
+}
+
+
+// Function that does the dirty to connect to the Nagios API
+
+function fetch_state($hostname, $port, $protocol) {
+    global $api_type;
+
+    switch ($api_type) {
+    case "livestatus":
+        $state = fetch_state_livestatus($hostname, $port, $protocol);
+        break;
+    case "nagios-api":
+        $state = fetch_state_nagios_api($hostname, $port, $protocol);
+        break;
+    }
+
+    return $state;
 }
 
 // Check to see if the user has a cookie that disables some hosts
@@ -57,7 +141,7 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 foreach ($nagios_hosts as $host) {
     // Check if the host has been disabled locally
     if (!in_array($host['tag'], $unwanted_hosts)) {
-        $host_state = connectHost($host['hostname'], $host['port'], $host['protocol']);
+        $host_state = fetch_state($host['hostname'], $host['port'], $host['protocol']);
         if (is_string($host_state)) {
             $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
         } else {
@@ -69,9 +153,11 @@ foreach ($nagios_hosts as $host) {
     }
 }
 
+
+
 if (isset($mock_state_file)) {
-  $data = json_decode(file_get_contents($mock_state_file), true);
-  $state = $data['content'];
+    $data = json_decode(file_get_contents($mock_state_file), true);
+    $state = $data['content'];
 }
 
 // Sort the array alphabetically by hostname. 
@@ -84,13 +170,13 @@ if (count($errors) > 0) {
         echo "<div class='status_red'>{$error}</div>";
     }
 }
-foreach($state as $hostname => $host_detail) {
+foreach ($state as $hostname => $host_detail) {
     // Check if the host matches the filter
     if (preg_match("/$filter/", $hostname)) {
         // If the host is NOT OK...
-        if ($host_detail['current_state'] != 0) {
+        if ($host_detail[$api_cols[$api_type]['state']] != 0) {
             // Sort the host into the correct array. It's either a known issue or not. 
-            if ( ($host_detail['problem_has_been_acknowledged'] > 0) || ($host_detail['scheduled_downtime_depth'] > 0) || ($host_detail['notifications_enabled'] == 0) ) {
+            if ( ($host_detail[$api_cols[$api_type]['ack']] > 0) || ($host_detail['scheduled_downtime_depth'] > 0) || ($host_detail['notifications_enabled'] == 0) ) {
                 $array_name = "known_hosts";
             } else {
                 $array_name = "down_hosts";
@@ -99,7 +185,7 @@ foreach($state as $hostname => $host_detail) {
             // Populate the array. 
             array_push($$array_name, array(
                 "hostname" => $hostname,
-                "host_state" => $host_detail['current_state'],
+                "host_state" => $host_detail[$api_cols[$api_type]['state']],
                 "duration" => timeago($host_detail['last_state_change'], null, null, false),
                 "detail" => $host_detail['plugin_output'],
                 "current_attempt" => $host_detail['current_attempt'],
@@ -107,28 +193,35 @@ foreach($state as $hostname => $host_detail) {
                 "tag" => $host_detail['tag'],
                 "is_hard" => ($host_detail['current_attempt'] >= $host_detail['max_attempts']) ? true : false,
                 "is_downtime" => ($host_detail['scheduled_downtime_depth'] > 0) ? true : false,
-                "is_ack" => ($host_detail['problem_has_been_acknowledged'] > 0) ? true : false,
+                "is_ack" => ($host_detail[$api_cols[$api_type]['ack']] > 0) ? true : false,
                 "is_enabled" => ($host_detail['notifications_enabled'] > 0) ? true : false,
             )); 
         }
 
         // In any case, increment the overall status counters.
-        $host_summary[$host_detail['current_state']]++;
+        $host_summary[$host_detail[$api_cols[$api_type]['state']]]++;
 
         // Now parse the statuses for this host. 
-        foreach($host_detail['services'] as $service_name => $service_detail) {
+        foreach ($host_detail['services'] as $service_name => $service_detail) {
+
             // If the host is OK, AND the service is NOT OK. 
-            if ($service_detail['current_state'] != 0 && $host_detail['current_state'] == 0) {
+
+            if ($service_detail[$api_cols[$api_type]['state']] != 0 && $host_detail[$api_cols[$api_type]['state']] == 0) {
                 // Sort the service into the correct array. It's either a known issue or not. 
-                if ( ($service_detail['problem_has_been_acknowledged'] > 0) || ($service_detail['scheduled_downtime_depth'] > 0) || ( $service_detail['notifications_enabled'] == 0 ) || 
-                        ($host_detail['scheduled_downtime_depth'] > 0) ) {
+                if ( ($service_detail[$api_cols[$api_type]['ack']] > 0) 
+                    || ($service_detail['scheduled_downtime_depth'] > 0) 
+                    || ($service_detail['notifications_enabled'] == 0 ) 
+                    || ($host_detail['scheduled_downtime_depth'] > 0) 
+                ) {
                     $array_name = "known_services";
                 } else {
                     $array_name = "broken_services";
                 }
                 $downtime_remaining = null;
                 $downtimes = array_merge($service_detail['downtimes'], $host_detail['downtimes']);
-                if ($host_detail['scheduled_downtime_depth'] > 0 || $service_detail['scheduled_downtime_depth'] > 0) {
+                if ($host_detail['scheduled_downtime_depth'] > 0 
+                    || $service_detail['scheduled_downtime_depth'] > 0
+                ) {
                     if (count($downtimes) > 0) {
                         $downtime_info = array_pop($downtimes);
                         $downtime_remaining = "- ". timeago($downtime_info['end_time'], null, null, false) . " left";
@@ -137,22 +230,22 @@ foreach($state as $hostname => $host_detail) {
                 array_push($$array_name, array(
                     "hostname" => $hostname,
                     "service_name" => $service_name,
-                    "service_state" => $service_detail['current_state'],
+                    "service_state" => $service_detail[$api_cols[$api_type]['state']],
                     "duration" => timeago($service_detail['last_state_change'], null, null, false),
                     "last_state_change" => $service_detail['last_state_change'],
                     "detail" => $service_detail['plugin_output'],
                     "current_attempt" => $service_detail['current_attempt'],
-                    "max_attempts" => $service_detail['max_attempts'],
+                    "max_attempts" => $service_detail[$api_cols[$api_type]['max_attempts']],
                     "tag" => $host_detail['tag'],
-                    "is_hard" => ($service_detail['current_attempt'] >= $service_detail['max_attempts']) ? true : false,
+                    "is_hard" => ($service_detail['current_attempt'] >= $service_detail[$api_cols[$api_type]['max_attempts']]) ? true : false,
                     "is_downtime" => ($service_detail['scheduled_downtime_depth'] > 0 || $host_detail['scheduled_downtime_depth'] > 0) ? true : false,
                     "downtime_remaining" => $downtime_remaining,
-                    "is_ack" => ($service_detail['problem_has_been_acknowledged'] > 0) ? true : false,
+                    "is_ack" => ($service_detail[$api_cols[$api_type]['ack']] > 0) ? true : false,
                     "is_enabled" => ($service_detail['notifications_enabled'] > 0) ? true : false,
                 ));
             } 
-            if ($host_detail['current_state'] == 0) {
-                $service_summary[$service_detail['current_state']]++;
+            if ($host_detail['state'] == 0) {
+                $service_summary[$service_detail[$api_cols[$api_type]['state']]]++;
             }
         }
     } 
@@ -166,13 +259,13 @@ ksort($service_summary);
     <div class="section">
       <div class="header">
         <h3>Host status</h3>
-        <p class="totals"><b>Total:</b> <?php foreach($host_summary as $state => $count) { echo "<span class='{$nagios_host_status_colour[$state]}'>{$count}</span> "; } ?></p>
+        <p class="totals"><b>Total:</b> <?php foreach ($host_summary as $state => $count) { echo "<span class='{$nagios_host_status_colour[$state]}'>{$count}</span> "; } ?></p>
       </div>
 <?php if (count($down_hosts) > 0) { ?>
     <table id="broken_hosts" class="widetable">
     <tr><th>Hostname</th><th width="150px">State</th><th>Duration</th><th>Attempts</th><th>Detail</th></tr>
 <?php
-    foreach($down_hosts as $host) {
+    foreach ($down_hosts as $host) {
         $controls = build_controls($host['tag'], $host['hostname'], '');
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
         echo "<td>{$host['hostname']} " . print_tag($host['tag']) . " <span class='controls'>{$controls}</span></td>";
