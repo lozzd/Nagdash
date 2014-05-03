@@ -126,6 +126,7 @@ function fetch_state($hostname, $port, $protocol) {
         $state = fetch_state_livestatus($hostname, $port, $protocol);
         break;
     case "nagios-api":
+    default:
         $state = fetch_state_nagios_api($hostname, $port, $protocol);
         break;
     }
