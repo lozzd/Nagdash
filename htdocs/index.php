@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
-require_once('config.php');
-require_once('utils.php');
+require_once('../config.php');
+require_once('../phplib/utils.php');
 
 $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
