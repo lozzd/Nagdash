@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL ^ E_NOTICE);
-require_once 'config.php';
+error_reporting(E_ALL);
+require_once '../config.php';
 require_once 'utils.php';
 require_once 'timeago.php';
 
@@ -9,11 +9,11 @@ if (!function_exists('curl_init')) {
 }
 
 $nagios_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-$nagios_service_status 
+$nagios_service_status
     = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN");
-$nagios_host_status_colour 
+$nagios_host_status_colour
     = array(0 => "status_green", 1 => "status_red", 2 => "status_yellow");
-$nagios_service_status_colour 
+$nagios_service_status_colour
     = array(0 => "status_green", 1 => "status_yellow", 2 => "status_red", 3 => "status_grey");
 
 $nagios_toggle_status = array(0 => "disabled", 1 => "enabled");
@@ -53,7 +53,7 @@ function fetch_json($hostname,$port,$protocol,$url) {
     global $curl_stats;
 
     $ch = curl_init("$protocol://$hostname:$port$url");
-    curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); 
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $json = curl_exec($ch);
@@ -94,7 +94,7 @@ function fetch_state_livestatus($hostname, $port, $protocol) {
 
     $services = fetch_json(
         $hostname, $port, $protocol,
-        "/nagios/livestatus/index.php/services?" . 
+        "/nagios/livestatus/index.php/services?" .
         "Columns=description,host_name,plugin_output,notifications_enabled," .
         "downtimes,scheduled_downtime_depth,state,last_state_change," .
         "current_attempt,max_check_attempts,acknowledged"
@@ -137,7 +137,7 @@ function fetch_state($hostname, $port, $protocol) {
 $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 
-// Collect the API data from each Nagios host. 
+// Collect the API data from each Nagios host.
 foreach ($nagios_hosts as $host) {
     // Check if the host has been disabled locally
     if (!in_array($host['tag'], $unwanted_hosts)) {
@@ -160,10 +160,10 @@ if (isset($mock_state_file)) {
     $state = $data['content'];
 }
 
-// Sort the array alphabetically by hostname. 
+// Sort the array alphabetically by hostname.
 deep_ksort($state);
 
-// At this point, the data collection is completed. 
+// At this point, the data collection is completed.
 
 if (count($errors) > 0) {
     foreach ($errors as $error) {
@@ -175,14 +175,14 @@ foreach ($state as $hostname => $host_detail) {
     if (preg_match("/$filter/", $hostname)) {
         // If the host is NOT OK...
         if ($host_detail[$api_cols[$api_type]['state']] != 0) {
-            // Sort the host into the correct array. It's either a known issue or not. 
+            // Sort the host into the correct array. It's either a known issue or not.
             if ( ($host_detail[$api_cols[$api_type]['ack']] > 0) || ($host_detail['scheduled_downtime_depth'] > 0) || ($host_detail['notifications_enabled'] == 0) ) {
                 $array_name = "known_hosts";
             } else {
                 $array_name = "down_hosts";
             }
 
-            // Populate the array. 
+            // Populate the array.
             array_push($$array_name, array(
                 "hostname" => $hostname,
                 "host_state" => $host_detail[$api_cols[$api_type]['state']],
@@ -195,23 +195,23 @@ foreach ($state as $hostname => $host_detail) {
                 "is_downtime" => ($host_detail['scheduled_downtime_depth'] > 0) ? true : false,
                 "is_ack" => ($host_detail[$api_cols[$api_type]['ack']] > 0) ? true : false,
                 "is_enabled" => ($host_detail['notifications_enabled'] > 0) ? true : false,
-            )); 
+            ));
         }
 
         // In any case, increment the overall status counters.
         $host_summary[$host_detail[$api_cols[$api_type]['state']]]++;
 
-        // Now parse the statuses for this host. 
+        // Now parse the statuses for this host.
         foreach ($host_detail['services'] as $service_name => $service_detail) {
 
-            // If the host is OK, AND the service is NOT OK. 
+            // If the host is OK, AND the service is NOT OK.
 
             if ($service_detail[$api_cols[$api_type]['state']] != 0 && $host_detail[$api_cols[$api_type]['state']] == 0) {
-                // Sort the service into the correct array. It's either a known issue or not. 
-                if ( ($service_detail[$api_cols[$api_type]['ack']] > 0) 
-                    || ($service_detail['scheduled_downtime_depth'] > 0) 
-                    || ($service_detail['notifications_enabled'] == 0 ) 
-                    || ($host_detail['scheduled_downtime_depth'] > 0) 
+                // Sort the service into the correct array. It's either a known issue or not.
+                if ( ($service_detail[$api_cols[$api_type]['ack']] > 0)
+                    || ($service_detail['scheduled_downtime_depth'] > 0)
+                    || ($service_detail['notifications_enabled'] == 0 )
+                    || ($host_detail['scheduled_downtime_depth'] > 0)
                 ) {
                     $array_name = "known_services";
                 } else {
@@ -219,7 +219,7 @@ foreach ($state as $hostname => $host_detail) {
                 }
                 $downtime_remaining = null;
                 $downtimes = array_merge($service_detail['downtimes'], $host_detail['downtimes']);
-                if ($host_detail['scheduled_downtime_depth'] > 0 
+                if ($host_detail['scheduled_downtime_depth'] > 0
                     || $service_detail['scheduled_downtime_depth'] > 0
                 ) {
                     if (count($downtimes) > 0) {
@@ -243,12 +243,12 @@ foreach ($state as $hostname => $host_detail) {
                     "is_ack" => ($service_detail[$api_cols[$api_type]['ack']] > 0) ? true : false,
                     "is_enabled" => ($service_detail['notifications_enabled'] > 0) ? true : false,
                 ));
-            } 
+            }
             if ($host_detail['state'] == 0) {
                 $service_summary[$service_detail[$api_cols[$api_type]['state']]]++;
             }
         }
-    } 
+    }
 }
 ksort($host_summary);
 ksort($service_summary);
@@ -269,7 +269,7 @@ ksort($service_summary);
         $controls = build_controls($host['tag'], $host['hostname'], '');
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
         echo "<td>{$host['hostname']} " . print_tag($host['tag']) . " <span class='controls'>{$controls}</span></td>";
-        echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>"; 
+        echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>";
         echo "<td>{$host['duration']}</td>";
         echo "<td>{$host['current_attempt']}/{$host['max_attempts']}</td>";
         echo "<td class=\"desc\">{$host['detail']}</td>";
@@ -279,7 +279,7 @@ ksort($service_summary);
     </table>
 <?php } else { ?>
     <table class="widetable status_green"><tr><td><b>All hosts OK</b></td></tr></table>
-<?php 
+<?php
 }
 if (count($known_hosts) > 0) {
     foreach ($known_hosts as $this_host) {
@@ -287,7 +287,7 @@ if (count($known_hosts) > 0) {
         if ($this_host['is_downtime']) $status_text = "downtime";
         if (!$this_host['is_enabled']) $status_text = "disabled";
         $known_host_list[] = "{$this_host['hostname']} " . print_tag($this_host['tag']) . " <span class='known_hosts_desc'>({$status_text} - {$this_host['duration']})</span>";
-    } 
+    }
     $known_host_list_complete = implode(" &bull; ", $known_host_list);
     echo "<table class='widetable known_hosts'><tr><td><b>Known Problem Hosts: </b> {$known_host_list_complete}</td></tr></table>";
 }
@@ -324,7 +324,7 @@ if (count($known_hosts) > 0) {
     </table>
 <?php } else { ?>
     <table class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
-<?php } 
+<?php }
 
 if ($sort_by_time) {
     usort($known_services,'cmp_last_state_change');
@@ -335,7 +335,7 @@ if (count($known_services) > 0) { ?>
     <table class="widetable known_service" id="known_services">
     <tr><th width="30%">Hostname</th><th width="37%">Service</th><th width="18%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
-    
+
     foreach($known_services as $service) {
         if ($service['is_ack']) $status_text = "ack";
         if ($service['is_downtime']) $status_text = "downtime {$service['downtime_remaining']}";
@@ -368,15 +368,15 @@ foreach ($curl_stats as $server => $server_stats) {
 <?php
 
 
-// Utility function to sort the aggregated array by keys. 
-function deep_ksort(&$arr) { 
-    ksort($arr); 
-    foreach ($arr as &$a) { 
-        if (is_array($a) && !empty($a)) { 
-            deep_ksort($a); 
-        } 
-    } 
-} 
+// Utility function to sort the aggregated array by keys.
+function deep_ksort(&$arr) {
+    ksort($arr);
+    foreach ($arr as &$a) {
+        if (is_array($a) && !empty($a)) {
+            deep_ksort($a);
+        }
+    }
+}
 
 function cmp_last_state_change($a,$b) {
     if ($a['last_state_change'] == $b['last_state_change']) return 0;
@@ -385,15 +385,15 @@ function cmp_last_state_change($a,$b) {
 
 function build_controls($tag, $host, $service) {
     $controls = '<div class="btn-group">';
-    $controls .= "<a href='#' onClick=\"$.post('do_action.php', { 
+    $controls .= "<a href='#' onClick=\"$.post('do_action.php', {
         nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'ack' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
             <i class='icon-check'></i> Ack </a>";
     if (!isset($service['is_enabled'])) {
-        $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+        $controls .="<a href='#' onClick=\"$.post('do_action.php', {
                 nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
                     <i class='icon-volume-off'></i> Silence</a>";
     } else {
-        $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+        $controls .="<a href='#' onClick=\"$.post('do_action.php', {
                 nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
                     <i class='icon-volume-up'></i> Unsilence</a>";
     }
@@ -403,8 +403,8 @@ function build_controls($tag, $host, $service) {
         <ul class="dropdown-menu pull-right">';
         $timespans = array("10 minutes" => 10, "30 minutes" => 30, "60 minutes" => 60, "2 hours" => 120, "12 hours" => 720, "1 day" => 1440, "7 days" => 10080);
         foreach ($timespans as $name => $minutes) {
-            $controls .= "<li><a onClick=\"$.post('do_action.php', 
-                { nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', duration: {$minutes}, action: 'downtime' }, function(data) { showInfo(data) } ); return false;\" 
+            $controls .= "<li><a onClick=\"$.post('do_action.php',
+                { nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', duration: {$minutes}, action: 'downtime' }, function(data) { showInfo(data) } ); return false;\"
                 href='#'>{$name}</a></li>";
         }
         $controls .= "</ul>";

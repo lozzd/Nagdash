@@ -34,8 +34,8 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
   });
 </script>
 <style type="text/css">
-  <?php foreach ($nagios_hosts as $host) { 
-        echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n"; 
+  <?php foreach ($nagios_hosts as $host) {
+        echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n";
   } ?>
 </style>
 </head>
