@@ -40,10 +40,7 @@ $known_services = array();
 $broken_services = array();
 $curl_stats = array();
 
-$api_cols = [
-];
-
-
+$api_cols = [];
 
 // Function that does the dirty to connect to the Nagios API
 
@@ -102,7 +99,7 @@ if (isset($mock_state_file)) {
 }
 
 // Sort the array alphabetically by hostname.
-deep_ksort($state);
+NagdashHelpers::deep_ksort($state);
 
 // At this point, the data collection is completed.
 
@@ -308,16 +305,6 @@ foreach ($curl_stats as $server => $server_stats) {
 ?>
 <?php
 
-
-// Utility function to sort the aggregated array by keys.
-function deep_ksort(&$arr) {
-    ksort($arr);
-    foreach ($arr as &$a) {
-        if (is_array($a) && !empty($a)) {
-            deep_ksort($a);
-        }
-    }
-}
 
 function cmp_last_state_change($a,$b) {
     if ($a['last_state_change'] == $b['last_state_change']) return 0;

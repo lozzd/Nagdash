@@ -82,6 +82,16 @@ class NagdashHelpers {
         curl_close($ch);
         return $ret;
     }
+
+
+    static function deep_ksort(&$arr) {
+        ksort($arr);
+        foreach ($arr as &$a) {
+            if (is_array($a) && !empty($a)) {
+                NagdashHelpers::deep_ksort($a);
+            }
+        }
+    }
 }
 
 ?>
