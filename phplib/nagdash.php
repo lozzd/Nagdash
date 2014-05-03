@@ -1,19 +1,29 @@
 <?php
-error_reporting(E_ALL ^ E_NOTICE);
-require_once 'config.php';
+error_reporting(E_ALL);
+require_once '../config.php';
 require_once 'utils.php';
 require_once 'timeago.php';
+
+// fall back to the nagios api
+if (empty($CONFIG["nagiosapis"])) {
+    $CONFIG["nagiosapis"] = ["NagiosApi"];
+}
+
+// require all the APIs
+foreach ($CONFIG["nagiosapis"] as $api) {
+    require_once "{$api}.php";
+}
 
 if (!function_exists('curl_init')) {
   die("ERROR: The PHP curl extension must be installed for Nagdash to function");
 }
 
 $nagios_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-$nagios_service_status 
+$nagios_service_status
     = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN");
-$nagios_host_status_colour 
+$nagios_host_status_colour
     = array(0 => "status_green", 1 => "status_red", 2 => "status_yellow");
-$nagios_service_status_colour 
+$nagios_service_status_colour
     = array(0 => "status_green", 1 => "status_yellow", 2 => "status_red", 3 => "status_grey");
 
 $nagios_toggle_status = array(0 => "disabled", 1 => "enabled");
@@ -30,91 +40,7 @@ $known_services = array();
 $broken_services = array();
 $curl_stats = array();
 
-$api_cols = [
-    'livestatus' => [
-        'state' => 'state',
-        'ack' => 'acknowledged',
-        'max_attempts' => 'max_check_attempts',
-        'service_name' => 'description',
-        'host_name' => 'host_name',
-    ],
-    'nagios-api' => [
-        'state' => 'current_state',
-        'ack' => 'problem_has_been_acknowledged',
-        'max_attempts' => 'max_attempts',
-        'service_name' => 'service_name',
-        'host_name' => 'name',
-    ]
-];
-
-
-
-function fetch_json($hostname,$port,$protocol,$url) {
-    global $curl_stats;
-
-    $ch = curl_init("$protocol://$hostname:$port$url");
-    curl_setopt($ch, CURLOPT_ENCODING, 'gzip'); 
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $json = curl_exec($ch);
-
-    $info = curl_getinfo($ch);
-
-    if (curl_errno($ch)) {
-        return "<pre>Attempt to hit API failed, sorry. Curl said: " . curl_error($ch) . "</pre>";
-    } elseif ($info['http_code'] != 200) {
-        return "<pre>Attempt to hit API failed, sorry. Curl said: HTTP Status {$info['http_code']} </pre>";
-    } else {
-        $curl_stats["$hostname:$port"] = curl_getinfo($ch);
-    }
-
-    curl_close($ch);
-    return json_decode($json, true);
-}
-
-function fetch_state_livestatus($hostname, $port, $protocol) {
-    $state = fetch_json(
-        $hostname, $port, $protocol,
-        "/nagios/livestatus/index.php/hosts?" .
-        "Columns=name,state,acknowledged,last_state_change,downtimes"
-    );
-
-    if (is_string($state)){
-        return $state;
-    }
-
-    $curl_stats["$hostname:$port"]['objects'] = count($state);
-    $munge = [];
-
-    foreach ($state as $host) {
-        $host['services'] = [];
-        $munge[$host['name']] = $host;
-    }
-    $state = $munge;
-
-    $services = fetch_json(
-        $hostname, $port, $protocol,
-        "/nagios/livestatus/index.php/services?" . 
-        "Columns=description,host_name,plugin_output,notifications_enabled," .
-        "downtimes,scheduled_downtime_depth,state,last_state_change," .
-        "current_attempt,max_check_attempts,acknowledged"
-    );
-
-    foreach ($services as $service) {
-        $hostname = $service['host_name'];
-        if ($state[$hostname]) {
-            $state[$hostname]['services'][$service['description']] = $service;
-        }
-    }
-
-    return $state;
-}
-
-function fetch_state_nagios_api($hostname, $port, $protocol) {
-    $response =  fetch_json($hostname, $port, $protocol, "/state");
-    return $response['content'];
-}
-
+$api_cols = [];
 
 // Function that does the dirty to connect to the Nagios API
 
@@ -123,25 +49,37 @@ function fetch_state($hostname, $port, $protocol) {
 
     switch ($api_type) {
     case "livestatus":
-        $state = fetch_state_livestatus($hostname, $port, $protocol);
+        $nagios_api = new NagiosLivestatus($hostname, $port, $protocol);
+        $ret = $nagios_api->getState();
+        $state = $ret["details"];
+        $curl_stats = $ret["curl_stats"];
+        $mapping = $nagios_api->getColumnMapping();
         break;
     case "nagios-api":
-        $state = fetch_state_nagios_api($hostname, $port, $protocol);
+        $nagios_api = new NagiosAPI($hostname, $port, $protocol);
+        $ret = $nagios_api->getState();
+        if ($ret["errors"] == true) {
+            $state = $ret["details"];
+        } else {
+            $state = $ret["details"]["content"];
+        }
+        $curl_stats = $ret["curl_stats"];
+        $mapping = $nagios_api->getColumnMapping();
         break;
     }
 
-    return $state;
+    return [$state, $mapping, $curl_stats];
 }
 
 // Check to see if the user has a cookie that disables some hosts
 $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 
-// Collect the API data from each Nagios host. 
+// Collect the API data from each Nagios host.
 foreach ($nagios_hosts as $host) {
     // Check if the host has been disabled locally
     if (!in_array($host['tag'], $unwanted_hosts)) {
-        $host_state = fetch_state($host['hostname'], $host['port'], $host['protocol']);
+        list($host_state, $api_cols, $curl_stats) = fetch_state($host['hostname'], $host['port'], $host['protocol']);
         if (is_string($host_state)) {
             $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
         } else {
@@ -160,10 +98,10 @@ if (isset($mock_state_file)) {
     $state = $data['content'];
 }
 
-// Sort the array alphabetically by hostname. 
-deep_ksort($state);
+// Sort the array alphabetically by hostname.
+NagdashHelpers::deep_ksort($state);
 
-// At this point, the data collection is completed. 
+// At this point, the data collection is completed.
 
 if (count($errors) > 0) {
     foreach ($errors as $error) {
@@ -174,18 +112,18 @@ foreach ($state as $hostname => $host_detail) {
     // Check if the host matches the filter
     if (preg_match("/$filter/", $hostname)) {
         // If the host is NOT OK...
-        if ($host_detail[$api_cols[$api_type]['state']] != 0) {
-            // Sort the host into the correct array. It's either a known issue or not. 
-            if ( ($host_detail[$api_cols[$api_type]['ack']] > 0) || ($host_detail['scheduled_downtime_depth'] > 0) || ($host_detail['notifications_enabled'] == 0) ) {
+        if ($host_detail[$api_cols['state']] != 0) {
+            // Sort the host into the correct array. It's either a known issue or not.
+            if ( ($host_detail[$api_cols['ack']] > 0) || ($host_detail['scheduled_downtime_depth'] > 0) || ($host_detail['notifications_enabled'] == 0) ) {
                 $array_name = "known_hosts";
             } else {
                 $array_name = "down_hosts";
             }
 
-            // Populate the array. 
+            // Populate the array.
             array_push($$array_name, array(
                 "hostname" => $hostname,
-                "host_state" => $host_detail[$api_cols[$api_type]['state']],
+                "host_state" => $host_detail{$api_cols['state']},
                 "duration" => timeago($host_detail['last_state_change'], null, null, false),
                 "detail" => $host_detail['plugin_output'],
                 "current_attempt" => $host_detail['current_attempt'],
@@ -193,25 +131,25 @@ foreach ($state as $hostname => $host_detail) {
                 "tag" => $host_detail['tag'],
                 "is_hard" => ($host_detail['current_attempt'] >= $host_detail['max_attempts']) ? true : false,
                 "is_downtime" => ($host_detail['scheduled_downtime_depth'] > 0) ? true : false,
-                "is_ack" => ($host_detail[$api_cols[$api_type]['ack']] > 0) ? true : false,
+                "is_ack" => ($host_detail[$api_cols['ack']] > 0) ? true : false,
                 "is_enabled" => ($host_detail['notifications_enabled'] > 0) ? true : false,
-            )); 
+            ));
         }
 
         // In any case, increment the overall status counters.
-        $host_summary[$host_detail[$api_cols[$api_type]['state']]]++;
+        $host_summary[$host_detail[$api_cols['state']]]++;
 
-        // Now parse the statuses for this host. 
+        // Now parse the statuses for this host.
         foreach ($host_detail['services'] as $service_name => $service_detail) {
 
-            // If the host is OK, AND the service is NOT OK. 
+            // If the host is OK, AND the service is NOT OK.
 
-            if ($service_detail[$api_cols[$api_type]['state']] != 0 && $host_detail[$api_cols[$api_type]['state']] == 0) {
-                // Sort the service into the correct array. It's either a known issue or not. 
-                if ( ($service_detail[$api_cols[$api_type]['ack']] > 0) 
-                    || ($service_detail['scheduled_downtime_depth'] > 0) 
-                    || ($service_detail['notifications_enabled'] == 0 ) 
-                    || ($host_detail['scheduled_downtime_depth'] > 0) 
+            if ($service_detail[$api_cols['state']] != 0 && $host_detail[$api_cols['state']] == 0) {
+                // Sort the service into the correct array. It's either a known issue or not.
+                if ( ($service_detail[$api_cols['ack']] > 0)
+                    || ($service_detail['scheduled_downtime_depth'] > 0)
+                    || ($service_detail['notifications_enabled'] == 0 )
+                    || ($host_detail['scheduled_downtime_depth'] > 0)
                 ) {
                     $array_name = "known_services";
                 } else {
@@ -219,7 +157,7 @@ foreach ($state as $hostname => $host_detail) {
                 }
                 $downtime_remaining = null;
                 $downtimes = array_merge($service_detail['downtimes'], $host_detail['downtimes']);
-                if ($host_detail['scheduled_downtime_depth'] > 0 
+                if ($host_detail['scheduled_downtime_depth'] > 0
                     || $service_detail['scheduled_downtime_depth'] > 0
                 ) {
                     if (count($downtimes) > 0) {
@@ -230,25 +168,25 @@ foreach ($state as $hostname => $host_detail) {
                 array_push($$array_name, array(
                     "hostname" => $hostname,
                     "service_name" => $service_name,
-                    "service_state" => $service_detail[$api_cols[$api_type]['state']],
+                    "service_state" => $service_detail[$api_cols['state']],
                     "duration" => timeago($service_detail['last_state_change'], null, null, false),
                     "last_state_change" => $service_detail['last_state_change'],
                     "detail" => $service_detail['plugin_output'],
                     "current_attempt" => $service_detail['current_attempt'],
-                    "max_attempts" => $service_detail[$api_cols[$api_type]['max_attempts']],
+                    "max_attempts" => $service_detail[$api_cols['max_attempts']],
                     "tag" => $host_detail['tag'],
-                    "is_hard" => ($service_detail['current_attempt'] >= $service_detail[$api_cols[$api_type]['max_attempts']]) ? true : false,
+                    "is_hard" => ($service_detail['current_attempt'] >= $service_detail[$api_cols['max_attempts']]) ? true : false,
                     "is_downtime" => ($service_detail['scheduled_downtime_depth'] > 0 || $host_detail['scheduled_downtime_depth'] > 0) ? true : false,
                     "downtime_remaining" => $downtime_remaining,
-                    "is_ack" => ($service_detail[$api_cols[$api_type]['ack']] > 0) ? true : false,
+                    "is_ack" => ($service_detail[$api_cols['ack']] > 0) ? true : false,
                     "is_enabled" => ($service_detail['notifications_enabled'] > 0) ? true : false,
                 ));
-            } 
+            }
             if ($host_detail['state'] == 0) {
-                $service_summary[$service_detail[$api_cols[$api_type]['state']]]++;
+                $service_summary[$service_detail[$api_cols['state']]]++;
             }
         }
-    } 
+    }
 }
 ksort($host_summary);
 ksort($service_summary);
@@ -268,8 +206,8 @@ ksort($service_summary);
     foreach ($down_hosts as $host) {
         $controls = build_controls($host['tag'], $host['hostname'], '');
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
-        echo "<td>{$host['hostname']} " . print_tag($host['tag']) . " <span class='controls'>{$controls}</span></td>";
-        echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>"; 
+        echo "<td>{$host['hostname']} " . NagdashHelpers::print_tag($host['tag']) . " <span class='controls'>{$controls}</span></td>";
+        echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>";
         echo "<td>{$host['duration']}</td>";
         echo "<td>{$host['current_attempt']}/{$host['max_attempts']}</td>";
         echo "<td class=\"desc\">{$host['detail']}</td>";
@@ -279,15 +217,15 @@ ksort($service_summary);
     </table>
 <?php } else { ?>
     <table class="widetable status_green"><tr><td><b>All hosts OK</b></td></tr></table>
-<?php 
+<?php
 }
 if (count($known_hosts) > 0) {
     foreach ($known_hosts as $this_host) {
         if ($this_host['is_ack']) $status_text = "ack";
         if ($this_host['is_downtime']) $status_text = "downtime";
         if (!$this_host['is_enabled']) $status_text = "disabled";
-        $known_host_list[] = "{$this_host['hostname']} " . print_tag($this_host['tag']) . " <span class='known_hosts_desc'>({$status_text} - {$this_host['duration']})</span>";
-    } 
+        $known_host_list[] = "{$this_host['hostname']} " . NagdashHelpers::print_tag($this_host['tag']) . " <span class='known_hosts_desc'>({$status_text} - {$this_host['duration']})</span>";
+    }
     $known_host_list_complete = implode(" &bull; ", $known_host_list);
     echo "<table class='widetable known_hosts'><tr><td><b>Known Problem Hosts: </b> {$known_host_list_complete}</td></tr></table>";
 }
@@ -314,7 +252,7 @@ if (count($known_hosts) > 0) {
         $blink_tag = ($service['is_hard'] && $enable_blinking) ? "<blink>" : "";
         $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
-        echo "<td>{$service['hostname']} " . print_tag($service['tag']) . " <span class='controls'>{$controls}</span></td>";
+        echo "<td>{$service['hostname']} " . NagdashHelpers::print_tag($service['tag']) . " <span class='controls'>{$controls}</span></td>";
         echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]} {$soft_style}'>{$blink_tag}{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
@@ -324,7 +262,7 @@ if (count($known_hosts) > 0) {
     </table>
 <?php } else { ?>
     <table class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
-<?php } 
+<?php }
 
 if ($sort_by_time) {
     usort($known_services,'cmp_last_state_change');
@@ -335,13 +273,13 @@ if (count($known_services) > 0) { ?>
     <table class="widetable known_service" id="known_services">
     <tr><th width="30%">Hostname</th><th width="37%">Service</th><th width="18%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
-    
+
     foreach($known_services as $service) {
         if ($service['is_ack']) $status_text = "ack";
         if ($service['is_downtime']) $status_text = "downtime {$service['downtime_remaining']}";
         if (!$service['is_enabled']) $status_text = "disabled";
         echo "<tr class='known_service'>";
-        echo "<td>{$service['hostname']} " . print_tag($service['tag']) . "</td>";
+        echo "<td>{$service['hostname']} " . NagdashHelpers::print_tag($service['tag']) . "</td>";
         echo "<td>{$service['service_name']}</td>";
         echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$nagios_service_status[$service['service_state']]} ({$status_text})</td>";
         echo "<td>{$service['duration']}</td>";
@@ -368,16 +306,6 @@ foreach ($curl_stats as $server => $server_stats) {
 <?php
 
 
-// Utility function to sort the aggregated array by keys. 
-function deep_ksort(&$arr) { 
-    ksort($arr); 
-    foreach ($arr as &$a) { 
-        if (is_array($a) && !empty($a)) { 
-            deep_ksort($a); 
-        } 
-    } 
-} 
-
 function cmp_last_state_change($a,$b) {
     if ($a['last_state_change'] == $b['last_state_change']) return 0;
     return ($a['last_state_change'] > $b['last_state_change']) ? -1 : 1;
@@ -385,15 +313,15 @@ function cmp_last_state_change($a,$b) {
 
 function build_controls($tag, $host, $service) {
     $controls = '<div class="btn-group">';
-    $controls .= "<a href='#' onClick=\"$.post('do_action.php', { 
+    $controls .= "<a href='#' onClick=\"$.post('do_action.php', {
         nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'ack' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
             <i class='icon-check'></i> Ack </a>";
     if (!isset($service['is_enabled'])) {
-        $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+        $controls .="<a href='#' onClick=\"$.post('do_action.php', {
                 nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
                     <i class='icon-volume-off'></i> Silence</a>";
     } else {
-        $controls .="<a href='#' onClick=\"$.post('do_action.php', { 
+        $controls .="<a href='#' onClick=\"$.post('do_action.php', {
                 nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
                     <i class='icon-volume-up'></i> Unsilence</a>";
     }
@@ -403,8 +331,8 @@ function build_controls($tag, $host, $service) {
         <ul class="dropdown-menu pull-right">';
         $timespans = array("10 minutes" => 10, "30 minutes" => 30, "60 minutes" => 60, "2 hours" => 120, "12 hours" => 720, "1 day" => 1440, "7 days" => 10080);
         foreach ($timespans as $name => $minutes) {
-            $controls .= "<li><a onClick=\"$.post('do_action.php', 
-                { nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', duration: {$minutes}, action: 'downtime' }, function(data) { showInfo(data) } ); return false;\" 
+            $controls .= "<li><a onClick=\"$.post('do_action.php',
+                { nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', duration: {$minutes}, action: 'downtime' }, function(data) { showInfo(data) } ); return false;\"
                 href='#'>{$name}</a></li>";
         }
         $controls .= "</ul>";

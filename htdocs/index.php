@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
-require_once('config.php');
-require_once('utils.php');
+require_once('../config.php');
+require_once('../phplib/utils.php');
 
 $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
@@ -34,14 +34,14 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
   });
 </script>
 <style type="text/css">
-  <?php foreach ($nagios_hosts as $host) { 
-        echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n"; 
+  <?php foreach ($nagios_hosts as $host) {
+        echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n";
   } ?>
 </style>
 </head>
 <body>
   <div id="spinner"><h3><img src="images/ajax-loader.gif" align="absmiddle"> Refreshing...</h3></div>
   <div id="nagioscontainer"></div>
-  <?=build_settings_dialog($nagios_hosts, $unwanted_hosts) ?>
+  <?=NagdashHelpers::build_settings_dialog($nagios_hosts, $unwanted_hosts) ?>
 </body>
 </html>
