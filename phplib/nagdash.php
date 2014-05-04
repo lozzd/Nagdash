@@ -204,9 +204,12 @@ ksort($service_summary);
     <tr><th>Hostname</th><th width="150px">State</th><th>Duration</th><th>Attempts</th><th>Detail</th></tr>
 <?php
     foreach ($down_hosts as $host) {
-        $controls = build_controls($host['tag'], $host['hostname'], '');
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
-        echo "<td>{$host['hostname']} " . NagdashHelpers::print_tag($host['tag']) . " <span class='controls'>{$controls}</span></td>";
+        echo "<td>{$host['hostname']} " . NagdashHelpers::print_tag($host['tag']) . " <span class='controls'>";
+        NagdashHelpers::render('controls.php',[ "tag" => $host['tag'],
+                                            "host" => $host['hostname'],
+                                            "service" => '']);
+        echo "</span></td>";
         echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>";
         echo "<td>{$host['duration']}</td>";
         echo "<td>{$host['current_attempt']}/{$host['max_attempts']}</td>";
@@ -250,9 +253,12 @@ if (count($known_hosts) > 0) {
     foreach($broken_services as $service) {
         $soft_style = ($service['is_hard']) ? "" : "status_soft";
         $blink_tag = ($service['is_hard'] && $enable_blinking) ? "<blink>" : "";
-        $controls = build_controls($service['tag'], $service['hostname'], $service['service_name']);
         echo "<tr>";
-        echo "<td>{$service['hostname']} " . NagdashHelpers::print_tag($service['tag']) . " <span class='controls'>{$controls}</span></td>";
+        echo "<td>{$service['hostname']} " . NagdashHelpers::print_tag($service['tag']) . " <span class='controls'>";
+        NagdashHelpers::render('controls.php', ["tag" => $service['tag'],
+                                                "host" => $service['hostname'],
+                                                "service" => $service['service_name']]);
+        echo "</span></td>";
         echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]} {$soft_style}'>{$blink_tag}{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
@@ -309,35 +315,6 @@ foreach ($curl_stats as $server => $server_stats) {
 function cmp_last_state_change($a,$b) {
     if ($a['last_state_change'] == $b['last_state_change']) return 0;
     return ($a['last_state_change'] > $b['last_state_change']) ? -1 : 1;
-}
-
-function build_controls($tag, $host, $service) {
-    $controls = '<div class="btn-group">';
-    $controls .= "<a href='#' onClick=\"$.post('do_action.php', {
-        nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'ack' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
-            <i class='icon-check'></i> Ack </a>";
-    if (!isset($service['is_enabled'])) {
-        $controls .="<a href='#' onClick=\"$.post('do_action.php', {
-                nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'disable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
-                    <i class='icon-volume-off'></i> Silence</a>";
-    } else {
-        $controls .="<a href='#' onClick=\"$.post('do_action.php', {
-                nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', action: 'enable' }, function(data) { showInfo(data) } ); return false;\" class='btn btn-mini'>
-                    <i class='icon-volume-up'></i> Unsilence</a>";
-    }
-    $controls .= '
-        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-        <i class="icon-time"></i> Downtime <span class="caret"></span></a>
-        <ul class="dropdown-menu pull-right">';
-        $timespans = array("10 minutes" => 10, "30 minutes" => 30, "60 minutes" => 60, "2 hours" => 120, "12 hours" => 720, "1 day" => 1440, "7 days" => 10080);
-        foreach ($timespans as $name => $minutes) {
-            $controls .= "<li><a onClick=\"$.post('do_action.php',
-                { nag_host: '{$tag}', hostname: '{$host}', service: '{$service}', duration: {$minutes}, action: 'downtime' }, function(data) { showInfo(data) } ); return false;\"
-                href='#'>{$name}</a></li>";
-        }
-        $controls .= "</ul>";
-    $controls .= "</div>";
-    return $controls;
 }
 
 ?>

@@ -11,27 +11,11 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 <title>Nagios Dashboard</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+<script src="js/nagdash.js"></script>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/blinkftw.css">
 <link rel="stylesheet" href="css/main.css">
 <script>
-  function showInfo(show_data) {
-      $("#info-window").fadeIn("fast");
-      $("#info-window-text").empty().append(show_data);
-  }
-  $(document).ready(function() {
-      $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
-      var refreshId = setInterval(function() {
-          <?if ($show_refresh_spinner) {?>
-          $("#spinner").fadeIn("fast");
-          <? }?>
-          $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
-      }, 20000);
-      $.ajaxSetup({ cache: false });
-  });
-  $(document).keypress("s", function(e) {
-      $("#settings_modal").modal();
-  });
 </script>
 <style type="text/css">
   <?php foreach ($nagios_hosts as $host) {
@@ -42,6 +26,15 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 <body>
   <div id="spinner"><h3><img src="images/ajax-loader.gif" align="absmiddle"> Refreshing...</h3></div>
   <div id="nagioscontainer"></div>
-  <?=NagdashHelpers::build_settings_dialog($nagios_hosts, $unwanted_hosts) ?>
+  <? NagdashHelpers::render("settings_dialog.php", ["nagios_hosts" => $nagios_hosts,
+                                                    "unwanted_hosts" => $unwanted_hosts]);?>
+
+
+<script>
+    $(document).keypress("s", function(e) {
+        $("#settings_modal").modal();
+    });
+    $(document).ready(load_nagios_data(<?echo ($show_refresh_spinner === true)?>);
+</script>
 </body>
 </html>
