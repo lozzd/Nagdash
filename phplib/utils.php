@@ -2,9 +2,8 @@
 
 class NagdashHelpers {
 
-    static function print_tag($tag_name) {
-        global $nagios_hosts;
-        if (count($nagios_hosts) > 1) {
+    static function print_tag($tag_name, $nagios_hostcount) {
+        if (($nagios_hostcount) > 1) {
             return "<span class='tag tag_{$tag_name}'>{$tag_name}</span>";
         } else {
             return false;

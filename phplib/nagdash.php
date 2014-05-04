@@ -205,7 +205,8 @@ ksort($service_summary);
 <?php
     foreach ($down_hosts as $host) {
         echo "<tr id='host_row' class='{$nagios_host_status_colour[$host['host_state']]}'>";
-        echo "<td>{$host['hostname']} " . NagdashHelpers::print_tag($host['tag']) . " <span class='controls'>";
+        $tag = NagdashHelpers::print_tag($host['tag'], count($nagios_hosts));
+        echo "<td>{$host['hostname']} " . $tag . " <span class='controls'>";
         NagdashHelpers::render('controls.php',[ "tag" => $host['tag'],
                                             "host" => $host['hostname'],
                                             "service" => '']);
@@ -227,7 +228,8 @@ if (count($known_hosts) > 0) {
         if ($this_host['is_ack']) $status_text = "ack";
         if ($this_host['is_downtime']) $status_text = "downtime";
         if (!$this_host['is_enabled']) $status_text = "disabled";
-        $known_host_list[] = "{$this_host['hostname']} " . NagdashHelpers::print_tag($this_host['tag']) . " <span class='known_hosts_desc'>({$status_text} - {$this_host['duration']})</span>";
+        $tag = NagdashHelpers::print_tag($this_host['tag'], count($nagios_hosts));
+        $known_host_list[] = "{$this_host['hostname']} " . $tag . " <span class='known_hosts_desc'>({$status_text} - {$this_host['duration']})</span>";
     }
     $known_host_list_complete = implode(" &bull; ", $known_host_list);
     echo "<table class='widetable known_hosts'><tr><td><b>Known Problem Hosts: </b> {$known_host_list_complete}</td></tr></table>";
@@ -253,8 +255,9 @@ if (count($known_hosts) > 0) {
     foreach($broken_services as $service) {
         $soft_style = ($service['is_hard']) ? "" : "status_soft";
         $blink_tag = ($service['is_hard'] && $enable_blinking) ? "<blink>" : "";
+        $tag = NagdashHelpers::print_tag($service['tag'], count($nagios_hosts));
         echo "<tr>";
-        echo "<td>{$service['hostname']} " . NagdashHelpers::print_tag($service['tag']) . " <span class='controls'>";
+        echo "<td>{$service['hostname']} " . $tag . " <span class='controls'>";
         NagdashHelpers::render('controls.php', ["tag" => $service['tag'],
                                                 "host" => $service['hostname'],
                                                 "service" => $service['service_name']]);
@@ -285,7 +288,8 @@ if (count($known_services) > 0) { ?>
         if ($service['is_downtime']) $status_text = "downtime {$service['downtime_remaining']}";
         if (!$service['is_enabled']) $status_text = "disabled";
         echo "<tr class='known_service'>";
-        echo "<td>{$service['hostname']} " . NagdashHelpers::print_tag($service['tag']) . "</td>";
+        $tag = NagdashHelpers::print_tag($service['tag'], count($nagios_hosts));
+        echo "<td>{$service['hostname']} " . $tag . "</td>";
         echo "<td>{$service['service_name']}</td>";
         echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$nagios_service_status[$service['service_state']]} ({$status_text})</td>";
         echo "<td>{$service['duration']}</td>";
