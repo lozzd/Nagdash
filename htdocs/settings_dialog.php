@@ -4,7 +4,8 @@
   <h3>Nagdash Settings</h3>
 </div>
 <div class="modal-body">
-<form id="settings-form" action="do_settings.php" method="post"><fieldset>
+<form id="settings-form" action="do_settings.php" method="post">
+<fieldset>
 <legend>Instances to show</legend>
 <?php
     foreach ($nagios_hosts as $host) {
