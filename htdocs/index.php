@@ -34,7 +34,7 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
     $(document).keypress("s", function(e) {
         $("#settings_modal").modal();
     });
-    $(document).ready(load_nagios_data(<?echo ($show_refresh_spinner === true)?>);
+    $(document).ready(load_nagios_data(<?echo ($show_refresh_spinner === true)?>));
 </script>
 </body>
 </html>

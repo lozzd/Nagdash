@@ -248,7 +248,7 @@ if (count($known_hosts) > 0) {
     <tr><th width="30%">Hostname</th><th width="50%">Service</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
     if ($sort_by_time) {
-        usort($broken_services,'cmp_last_state_change');
+        usort($broken_services,'NagdashHelpers::cmp_last_state_change');
     }
     foreach($broken_services as $service) {
         $soft_style = ($service['is_hard']) ? "" : "status_soft";
@@ -271,7 +271,7 @@ if (count($known_hosts) > 0) {
 <?php }
 
 if ($sort_by_time) {
-    usort($known_services,'cmp_last_state_change');
+    usort($known_services,'NagdashHelpers::cmp_last_state_change');
 }
 
 if (count($known_services) > 0) { ?>
@@ -306,15 +306,6 @@ echo "<!-- nagios-api server status: -->";
 foreach ($curl_stats as $server => $server_stats) {
     echo "<!-- {$server_stats['url']} returned code {$server_stats['http_code']}, {$server_stats['size_download']} bytes ";
     echo "in {$server_stats['total_time']} seconds (first byte: {$server_stats['starttransfer_time']}). JSON parsed {$server_stats['objects']} hosts -->\n";
-}
-
-?>
-<?php
-
-
-function cmp_last_state_change($a,$b) {
-    if ($a['last_state_change'] == $b['last_state_change']) return 0;
-    return ($a['last_state_change'] > $b['last_state_change']) ? -1 : 1;
 }
 
 ?>

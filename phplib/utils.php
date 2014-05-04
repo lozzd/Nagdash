@@ -80,6 +80,21 @@ class NagdashHelpers {
         extract($vars);
         include $template;
     }
+
+    /**
+     * helper function to compare last state change
+     *
+     * Parameter:
+     *   $a - first state
+     *   $b - second state
+     *
+     * Returns -1, 0 or 1 depending on state comparison
+     */
+    static function cmp_last_state_change($a,$b) {
+        if ($a['last_state_change'] == $b['last_state_change']) return 0;
+        return ($a['last_state_change'] > $b['last_state_change']) ? -1 : 1;
+    }
+
 }
 
 ?>
