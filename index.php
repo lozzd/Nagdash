@@ -22,7 +22,7 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
   $(document).ready(function() {
       $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
       var refreshId = setInterval(function() {
-          <?if ($show_refresh_spinner) {?>
+          <?php if ($show_refresh_spinner) {?>
           $("#spinner").fadeIn("fast");
           <? }?>
           $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
