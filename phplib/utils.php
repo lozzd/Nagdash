@@ -94,6 +94,44 @@ class NagdashHelpers {
         return ($a['last_state_change'] > $b['last_state_change']) ? -1 : 1;
     }
 
+    /**
+     * get the correct state data based on the api type
+     *
+     * Parameters:
+     *  $hostname - hostname of the nagios instance
+     *  $port     - port the nagios api instance is listening on
+     *  $protocol - the protocol to use for the transport (http/s)
+     *  $api_type - the type of API to use (nagiosapi, livestatus, ...)
+     *
+     * Returns an array of [$state, $mapping, $curl_stats]
+     */
+    static function fetch_state($hostname, $port, $protocol, $api_type) {
+
+        switch ($api_type) {
+        case "livestatus":
+            $nagios_api = new NagiosLivestatus($hostname, $port, $protocol);
+            $ret = $nagios_api->getState();
+            $state = $ret["details"];
+            $curl_stats = $ret["curl_stats"];
+            $mapping = $nagios_api->getColumnMapping();
+            break;
+        case "nagios-api":
+            $nagios_api = new NagiosAPI($hostname, $port, $protocol);
+            $ret = $nagios_api->getState();
+            if ($ret["errors"] == true) {
+                $state = $ret["details"];
+            } else {
+                $state = $ret["details"]["content"];
+            }
+            $curl_stats = $ret["curl_stats"];
+            $mapping = $nagios_api->getColumnMapping();
+            break;
+        }
+
+        return [$state, $mapping, $curl_stats];
+    }
+
+
 }
 
 ?>

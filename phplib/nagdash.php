@@ -42,34 +42,6 @@ $curl_stats = array();
 
 $api_cols = [];
 
-// Function that does the dirty to connect to the Nagios API
-
-function fetch_state($hostname, $port, $protocol, $api_type) {
-
-    switch ($api_type) {
-    case "livestatus":
-        $nagios_api = new NagiosLivestatus($hostname, $port, $protocol);
-        $ret = $nagios_api->getState();
-        $state = $ret["details"];
-        $curl_stats = $ret["curl_stats"];
-        $mapping = $nagios_api->getColumnMapping();
-        break;
-    case "nagios-api":
-        $nagios_api = new NagiosAPI($hostname, $port, $protocol);
-        $ret = $nagios_api->getState();
-        if ($ret["errors"] == true) {
-            $state = $ret["details"];
-        } else {
-            $state = $ret["details"]["content"];
-        }
-        $curl_stats = $ret["curl_stats"];
-        $mapping = $nagios_api->getColumnMapping();
-        break;
-    }
-
-    return [$state, $mapping, $curl_stats];
-}
-
 // Check to see if the user has a cookie that disables some hosts
 $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
@@ -78,7 +50,7 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 foreach ($nagios_hosts as $host) {
     // Check if the host has been disabled locally
     if (!in_array($host['tag'], $unwanted_hosts)) {
-        list($host_state, $api_cols, $local_curl_stats) = fetch_state($host['hostname'],
+        list($host_state, $api_cols, $local_curl_stats) = NagdashHelpers::fetch_state($host['hostname'],
             $host['port'], $host['protocol'], $api_type);
         $curl_stats = array_merge($curl_stats, $local_curl_stats);
         if (is_string($host_state)) {
