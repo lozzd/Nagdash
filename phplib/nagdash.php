@@ -79,7 +79,8 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 foreach ($nagios_hosts as $host) {
     // Check if the host has been disabled locally
     if (!in_array($host['tag'], $unwanted_hosts)) {
-        list($host_state, $api_cols, $curl_stats) = fetch_state($host['hostname'], $host['port'], $host['protocol']);
+        list($host_state, $api_cols, $local_curl_stats) = fetch_state($host['hostname'], $host['port'], $host['protocol']);
+        $curl_stats = array_merge($curl_stats, $local_curl_stats);
         if (is_string($host_state)) {
             $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
         } else {
