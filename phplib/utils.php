@@ -131,6 +131,40 @@ class NagdashHelpers {
         return [$state, $mapping, $curl_stats];
     }
 
+    /**
+     * get the host data from all nagios instances
+     *
+     * Parameters:
+     *  $nagios_hosts   - nagios hosts configuration array
+     *  $unwanted_hosts - list of unwanted tags for the user
+     *  $api_type       - API type to use
+     *
+     *  Returns [$state, $api_cols, $errors, $curl_stats]
+     */
+    static function get_nagios_host_data($nagios_hosts, $unwanted_hosts, $api_type) {
+        $state  = [];
+        $errors = [];
+        $curl_stats = [];
+        $api_cols = [];
+        foreach ($nagios_hosts as $host) {
+            // Check if the host has been disabled locally
+            if (!in_array($host['tag'], $unwanted_hosts)) {
+                list($host_state, $api_cols, $local_curl_stats) = NagdashHelpers::fetch_state($host['hostname'],
+                    $host['port'], $host['protocol'], $api_type);
+                $curl_stats = array_merge($curl_stats, $local_curl_stats);
+                if (is_string($host_state)) {
+                    $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
+                } else {
+                    foreach ($host_state as $this_host => $null) {
+                        $host_state[$this_host]['tag'] = $host['tag'];
+                    }
+                    $state += (array) $host_state;
+                }
+            }
+        }
+
+        return [$state, $api_cols, $errors, $curl_stats];
+    }
 
 }
 

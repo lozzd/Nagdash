@@ -30,15 +30,12 @@ $nagios_toggle_status = array(0 => "disabled", 1 => "enabled");
 
 $sort_by_time = ( isset($sort_by_time) && $sort_by_time ) ? true : false;
 
-$errors = array();
-$state = array();
 $host_summary = array();
 $service_summary = array();
 $down_hosts = array();
 $known_hosts = array();
 $known_services = array();
 $broken_services = array();
-$curl_stats = array();
 
 $api_cols = [];
 
@@ -47,28 +44,16 @@ $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 
 // Collect the API data from each Nagios host.
-foreach ($nagios_hosts as $host) {
-    // Check if the host has been disabled locally
-    if (!in_array($host['tag'], $unwanted_hosts)) {
-        list($host_state, $api_cols, $local_curl_stats) = NagdashHelpers::fetch_state($host['hostname'],
-            $host['port'], $host['protocol'], $api_type);
-        $curl_stats = array_merge($curl_stats, $local_curl_stats);
-        if (is_string($host_state)) {
-            $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
-        } else {
-            foreach ($host_state as $this_host => $null) {
-                $host_state[$this_host]['tag'] = $host['tag'];
-            }
-            $state += (array) $host_state;
-        }
-    }
-}
-
-
 
 if (isset($mock_state_file)) {
     $data = json_decode(file_get_contents($mock_state_file), true);
     $state = $data['content'];
+    $errors = [];
+    $curl_stats = [];
+    $api_cols = [];
+} else {
+    list($state, $api_cols, $errors, $curl_stats) = NagdashHelpers::get_nagios_host_data($nagios_hosts,
+        $unwanted_hosts, $api_type);
 }
 
 // Sort the array alphabetically by hostname.
