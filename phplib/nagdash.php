@@ -19,25 +19,13 @@ if (!function_exists('curl_init')) {
 }
 
 $nagios_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
-$nagios_service_status
-    = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN");
-$nagios_host_status_colour
-    = array(0 => "status_green", 1 => "status_red", 2 => "status_yellow");
-$nagios_service_status_colour
-    = array(0 => "status_green", 1 => "status_yellow", 2 => "status_red", 3 => "status_grey");
+$nagios_service_status = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN");
+$nagios_host_status_colour = array(0 => "status_green", 1 => "status_red", 2 => "status_yellow");
+$nagios_service_status_colour = array(0 => "status_green", 1 => "status_yellow", 2 => "status_red", 3 => "status_grey");
 
 $nagios_toggle_status = array(0 => "disabled", 1 => "enabled");
 
 $sort_by_time = ( isset($sort_by_time) && $sort_by_time ) ? true : false;
-
-$host_summary = array();
-$service_summary = array();
-$down_hosts = array();
-$known_hosts = array();
-$known_services = array();
-$broken_services = array();
-
-$api_cols = [];
 
 // Check to see if the user has a cookie that disables some hosts
 $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
@@ -66,88 +54,7 @@ if (count($errors) > 0) {
         echo "<div class='status_red'>{$error}</div>";
     }
 }
-foreach ($state as $hostname => $host_detail) {
-    // Check if the host matches the filter
-    if (preg_match("/$filter/", $hostname)) {
-        // If the host is NOT OK...
-        if ($host_detail[$api_cols['state']] != 0) {
-            // Sort the host into the correct array. It's either a known issue or not.
-            if ( ($host_detail[$api_cols['ack']] > 0) || ($host_detail['scheduled_downtime_depth'] > 0) || ($host_detail['notifications_enabled'] == 0) ) {
-                $array_name = "known_hosts";
-            } else {
-                $array_name = "down_hosts";
-            }
-
-            // Populate the array.
-            array_push($$array_name, array(
-                "hostname" => $hostname,
-                "host_state" => $host_detail{$api_cols['state']},
-                "duration" => timeago($host_detail['last_state_change'], null, null, false),
-                "detail" => $host_detail['plugin_output'],
-                "current_attempt" => $host_detail['current_attempt'],
-                "max_attempts" => $host_detail['max_attempts'],
-                "tag" => $host_detail['tag'],
-                "is_hard" => ($host_detail['current_attempt'] >= $host_detail['max_attempts']) ? true : false,
-                "is_downtime" => ($host_detail['scheduled_downtime_depth'] > 0) ? true : false,
-                "is_ack" => ($host_detail[$api_cols['ack']] > 0) ? true : false,
-                "is_enabled" => ($host_detail['notifications_enabled'] > 0) ? true : false,
-            ));
-        }
-
-        // In any case, increment the overall status counters.
-        $host_summary[$host_detail[$api_cols['state']]]++;
-
-        // Now parse the statuses for this host.
-        foreach ($host_detail['services'] as $service_name => $service_detail) {
-
-            // If the host is OK, AND the service is NOT OK.
-
-            if ($service_detail[$api_cols['state']] != 0 && $host_detail[$api_cols['state']] == 0) {
-                // Sort the service into the correct array. It's either a known issue or not.
-                if ( ($service_detail[$api_cols['ack']] > 0)
-                    || ($service_detail['scheduled_downtime_depth'] > 0)
-                    || ($service_detail['notifications_enabled'] == 0 )
-                    || ($host_detail['scheduled_downtime_depth'] > 0)
-                ) {
-                    $array_name = "known_services";
-                } else {
-                    $array_name = "broken_services";
-                }
-                $downtime_remaining = null;
-                $downtimes = array_merge($service_detail['downtimes'], $host_detail['downtimes']);
-                if ($host_detail['scheduled_downtime_depth'] > 0
-                    || $service_detail['scheduled_downtime_depth'] > 0
-                ) {
-                    if (count($downtimes) > 0) {
-                        $downtime_info = array_pop($downtimes);
-                        $downtime_remaining = "- ". timeago($downtime_info['end_time'], null, null, false) . " left";
-                    }
-                }
-                array_push($$array_name, array(
-                    "hostname" => $hostname,
-                    "service_name" => $service_name,
-                    "service_state" => $service_detail[$api_cols['state']],
-                    "duration" => timeago($service_detail['last_state_change'], null, null, false),
-                    "last_state_change" => $service_detail['last_state_change'],
-                    "detail" => $service_detail['plugin_output'],
-                    "current_attempt" => $service_detail['current_attempt'],
-                    "max_attempts" => $service_detail[$api_cols['max_attempts']],
-                    "tag" => $host_detail['tag'],
-                    "is_hard" => ($service_detail['current_attempt'] >= $service_detail[$api_cols['max_attempts']]) ? true : false,
-                    "is_downtime" => ($service_detail['scheduled_downtime_depth'] > 0 || $host_detail['scheduled_downtime_depth'] > 0) ? true : false,
-                    "downtime_remaining" => $downtime_remaining,
-                    "is_ack" => ($service_detail[$api_cols['ack']] > 0) ? true : false,
-                    "is_enabled" => ($service_detail['notifications_enabled'] > 0) ? true : false,
-                ));
-            }
-            if ($host_detail['state'] == 0) {
-                $service_summary[$service_detail[$api_cols['state']]]++;
-            }
-        }
-    }
-}
-ksort($host_summary);
-ksort($service_summary);
+list($host_summary, $service_summary, $down_hosts, $known_hosts, $known_services, $broken_services) = NagdashHelpers::parse_nagios_host_data($state, $filter, $api_cols);
 ?>
 
 <div id="info-window"><button class="close" onClick='$("#info-window").fadeOut("fast");'>&times;</button><div id="info-window-text"></div></div>
