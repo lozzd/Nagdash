@@ -107,16 +107,17 @@ class NagdashHelpers {
      */
     static function fetch_state($hostname, $port, $protocol, $api_type) {
 
+        $nagios_api = NagdashHelpers::get_nagios_api_object($api_type, $hostname, $port, $protocol);
+        // TODO: fix up the API implementations so they return the same
+        // formatted data. There is no real need to have this switch case here
         switch ($api_type) {
         case "livestatus":
-            $nagios_api = new NagiosLivestatus($hostname, $port, $protocol);
             $ret = $nagios_api->getState();
             $state = $ret["details"];
             $curl_stats = $ret["curl_stats"];
             $mapping = $nagios_api->getColumnMapping();
             break;
         case "nagios-api":
-            $nagios_api = new NagiosAPI($hostname, $port, $protocol);
             $ret = $nagios_api->getState();
             if ($ret["errors"] == true) {
                 $state = $ret["details"];
@@ -270,6 +271,24 @@ class NagdashHelpers {
 
         return [$host_summary, $service_summary, $down_hosts, $known_hosts, $known_services, $broken_services];
 
+    }
+
+
+    /**
+     * this is basically a factory function to give you back the proper nagios
+     * API object based on the api type
+     */
+    static function get_nagios_api_object($api_type, $hostname, $port=null, $protocol=null) {
+        switch ($api_type) {
+        case "livestatus":
+            $nagios_api = new NagiosLivestatus($hostname, $port, $protocol);
+            break;
+        case "nagios-api":
+            $nagios_api = new NagiosAPI($hostname, $port, $protocol);
+            break;
+        }
+
+        return $nagios_api;
     }
 
 }

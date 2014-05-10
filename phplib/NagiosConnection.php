@@ -14,12 +14,19 @@ interface iNagiosConnection
      * acknowledge a problem
      *
      * Parameter
-     *  $problem - problem to ack
+     *  $details - array with problem meta data like
+     *             [
+     *              "host" => $host,
+     *              "service" => $service,
+     *              "comment" => $comment,
+     *              "author" => $author,
+     *              "duration" => $duration
+     *              ]
      *
      * Returns an array of the form
      *  ["errors" => true/false, "details" => "message"]
      */
-    public function acknowledge($problem);
+    public function acknowledge($details);
 
     /**
      * enable notifications for a host/service
@@ -52,6 +59,6 @@ interface iNagiosConnection
      * Returns an array of the form
      *  ["errors" => true/false, "details" => "message"]
      */
-    public function setDowntime($target, $duration);
+    public function setDowntime($target);
 }
 
