@@ -36,17 +36,17 @@ class NagiosAPI implements iNagiosConnection {
      *  ["errors" => true/false, "details" => "message"]
      */
     public function acknowledge($details) {
-        return $this->post_to_api("/acknowledge_problem", $details);
+        return $this->post_to_api("acknowledge_problem", $details);
 
     }
     public function enableNotifications($details) {
-        return $this->post_to_api("/enable_notifications", $details);
+        return $this->post_to_api("enable_notifications", $details);
     }
     public function disableNotifications($details) {
-        return $this->post_to_api("/disable_notifications", $details);
+        return $this->post_to_api("disable_notifications", $details);
     }
     public function setDowntime($details) {
-        return $this->post_to_api("/schedule_downtime", $details);
+        return $this->post_to_api("schedule_downtime", $details);
     }
     public function getColumnMapping() {
         return [
