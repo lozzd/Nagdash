@@ -28,6 +28,8 @@ class NagdashHelpers {
         $ch = curl_init("$protocol://$hostname:$port$url");
         curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT , 20);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
         $json = curl_exec($ch);
 
