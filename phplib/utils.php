@@ -105,9 +105,10 @@ class NagdashHelpers {
      *
      * Returns an array of [$state, $mapping, $curl_stats]
      */
-    static function fetch_state($hostname, $port, $protocol, $api_type) {
+    static function fetch_state($hostname, $port, $protocol, $url, $api_type) {
 
-        $nagios_api = NagdashHelpers::get_nagios_api_object($api_type, $hostname, $port, $protocol);
+        $nagios_api = NagdashHelpers::get_nagios_api_object($api_type, $hostname,
+            $port, $protocol, $url);
         // TODO: fix up the API implementations so they return the same
         // formatted data. There is no real need to have this switch case here
         switch ($api_type) {
@@ -151,7 +152,7 @@ class NagdashHelpers {
             // Check if the host has been disabled locally
             if (!in_array($host['tag'], $unwanted_hosts)) {
                 list($host_state, $api_cols, $local_curl_stats) = NagdashHelpers::fetch_state($host['hostname'],
-                    $host['port'], $host['protocol'], $api_type);
+                    $host['port'], $host['protocol'], $host['url'], $api_type);
                 $curl_stats = array_merge($curl_stats, $local_curl_stats);
                 if (is_string($host_state)) {
                     $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
@@ -278,13 +279,14 @@ class NagdashHelpers {
      * this is basically a factory function to give you back the proper nagios
      * API object based on the api type
      */
-    static function get_nagios_api_object($api_type, $hostname, $port=null, $protocol=null) {
+    static function get_nagios_api_object($api_type, $hostname, $port=null,
+                                          $protocol=null, $url=null) {
         switch ($api_type) {
         case "livestatus":
-            $nagios_api = new NagiosLivestatus($hostname, $port, $protocol);
+            $nagios_api = new NagiosLivestatus($hostname, $port, $protocol, $url);
             break;
         case "nagios-api":
-            $nagios_api = new NagiosAPI($hostname, $port, $protocol);
+            $nagios_api = new NagiosAPI($hostname, $port, $protocol, $url);
             break;
         }
 

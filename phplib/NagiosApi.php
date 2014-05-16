@@ -6,11 +6,11 @@ require_once "utils.php";
 class NagiosAPI implements iNagiosConnection {
 
     function __construct($hostname, $port=6315, $protocol="https",
-                         $url = "/state") {
+                         $url = null) {
         $this->hostname = $hostname;
         $this->port = $port;
         $this->protocol = $protocol;
-        $this->url = $url;
+        $this->url = empty($url) ? "/state" : $url;
     }
 
     public function getState() {

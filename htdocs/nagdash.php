@@ -3,16 +3,9 @@ error_reporting(E_ALL);
 require_once '../config.php';
 require_once '../phplib/utils.php';
 require_once '../phplib/timeago.php';
+require_once '../phplib/NagiosApi.php';
+require_once '../phplib/NagiosLivestatus.php';
 
-// fall back to the nagios api
-if (empty($CONFIG["nagiosapis"])) {
-    $CONFIG["nagiosapis"] = ["NagiosApi"];
-}
-
-// require all the APIs
-foreach ($CONFIG["nagiosapis"] as $api) {
-    require_once "../phplib/{$api}.php";
-}
 
 if (!function_exists('curl_init')) {
   die("ERROR: The PHP curl extension must be installed for Nagdash to function");
