@@ -34,18 +34,20 @@ if (!isset($_POST['nag_host'])) {
 
         switch ($action) {
         case "ack":
-            $nagios_api->acknowledge($details);
+            $ret = $nagios_api->acknowledge($details);
             break;
         case "downtime":
-            $nagios_api->setDowntime($details);
+            $ret =  $nagios_api->setDowntime($details);
             break;
         case "enable":
-            $nagios_api->enableNotifications($details);
+            $ret = $nagios_api->enableNotifications($details);
             break;
         case "disable":
-            $nagios_api->disableNotifications($details);
+            $ret = $nagios_api->disableNotifications($details);
             break;
         }
+
+        echo $ret["details"];
 
     }
 }
