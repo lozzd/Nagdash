@@ -1,6 +1,9 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
-require_once 'config.php';
+require_once '../config.php';
+require_once '../phplib/NagiosApi.php';
+require_once '../phplib/NagiosLivestatus.php';
+require_once '../phplib/utils.php';
 
 $supported_methods = ["ack", "downtime", "enable", "disable"];
 
@@ -25,7 +28,7 @@ if (!isset($_POST['nag_host'])) {
         foreach ($nagios_hosts as $host) {
             if ($host['tag'] == $nagios_instance) {
                 $nagios_api = NagdashHelpers::get_nagios_api_object($api_type,
-                    $host["hostname"], $host["port"], $host["protocol"]);
+                    $host["hostname"], $host["port"], $host["protocol"], $host["url"]);
             }
         }
 
