@@ -15,8 +15,6 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/blinkftw.css">
 <link rel="stylesheet" href="css/main.css">
-<script>
-</script>
 <style type="text/css">
   <?php foreach ($nagios_hosts as $host) {
         echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n";
@@ -34,7 +32,7 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
     $(document).keypress("s", function(e) {
         $("#settings_modal").modal();
     });
-    $(document).ready(load_nagios_data(<?echo ($show_refresh_spinner === true)?>));
+    $(document).ready(load_nagios_data(<?php echo ($show_refresh_spinner === true)?>));
 </script>
 </body>
 </html>
