@@ -1,6 +1,6 @@
 <?php
 
-require_once 'config.php';
+require_once '../config.php';
 
 if (!isset($_SERVER['HTTP_REFERER'])) {
     echo "Woah, what did you just try and do?";
