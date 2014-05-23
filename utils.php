@@ -31,13 +31,23 @@ function build_settings_dialog($nagios_hosts, $unwanted_hosts) {
 function print_tag($host_or_service) {
     global $nagios_hosts;
     $tag_name = $host_or_service['tag'];
-    $url      = $host_or_service['url'];
 
-    if (count($nagios_hosts) > 1) {
-        return "<a href='{$url}' class='tag tag_{$tag_name}'>{$tag_name}</a>";
-    } else {
-        return false;
+    # TODO instead of threading the url here, perhaps we should just look
+    # it up in the config.  that requires modification of the config however
+    $url      = $host_or_service['url'];  
+    $elem     = "span";
+    $attr     = "";
+
+    if (count($nagios_hosts) <= 1) {
+	return false;
     }
+
+    if ($url) { 
+	$elem = "a";
+	$attr = "href='{$url}'";
+    }
+
+    return "<{$elem} {$attr} class='tag tag_{$tag_name}'>{$tag_name}</{$elem}>";
 }
 
 ?>
