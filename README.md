@@ -11,7 +11,7 @@ Written in PHP, it uses the [Nagios-api](https://github.com/xb95/nagios-api), PH
 Naglite2, the first iteration, was dependant on parsing the status.dat file that Nagios writes, so it had to live on your local machine. The code was also mostly borrowed from Naglite, and was poorly written and fairly unmaintainable. This project seeks to fix those two issues, primarily. 
 
 * **Simple configuration**: 1 line to add a new Nagios instance to pull results from. 
-* **Instance tags**: Every host and service is tagged with a small but effective icon that indicates which instance that host or service is pulled from. 
+* **Instance tags**: Every host and service is tagged with a small but effective icon that indicates which instance that host or service is pulled from.  This icon can be linked to the instance.
 * **Deployment flexibility**: Because Nagdash uses the nagios-api REST-like JSON interface, you no longer have to situation it on the same machine as your Nagios instance(s). As long as it can hit the API, it's good to go. 
 * **Clear, simple UI**: Designed to provide an at-a-glance overview of just how much is broken in you infrastructure. The more red, the more you need to panic. Services and hosts that are acknowledged, in downtime, or silenced are hidden away, but still available to avoid attracting the eye.
 * **Know about problems before they happen**: Soft alerts are shown clearly with their attempt number so you get a heads up before Nagios even tells you. 
@@ -78,6 +78,7 @@ The configuration file is fairly simple at this point, but here's an explanation
     * Protocol: http or https
     * Tag: The text that should be displayed against all hosts and services from this instance.
     * Taccolour: The background colour of the tag that is displayed next to all hosts and services from this instance. 
+    * url: (optional) the url to this web interface of this instance.  will be used to link the tags
 
 * Filter: This is a simple regex filter if you wish to only display certain hosts from all your instances. For example, if you were making a dedicated dashboard for a team that manages a certain set of servers.
 * Duration: This sets the default Downtime duration when the "Downtime" button is clicked from the Nagdash interface. Out of the box, it's 60 minutes.
