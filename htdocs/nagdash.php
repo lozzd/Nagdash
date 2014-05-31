@@ -24,6 +24,12 @@ $sort_by_time = ( isset($sort_by_time) && $sort_by_time ) ? true : false;
 $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 
+$cookie_filter = $_COOKIE['nagdash_hostfilter'];
+
+if (!empty($cookie_filter)) {
+    $filter = $cookie_filter;
+}
+
 // Collect the API data from each Nagios host.
 
 if (isset($mock_state_file)) {

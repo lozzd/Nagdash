@@ -12,8 +12,13 @@ foreach ($nagios_hosts as $host) {
     $hosts[] = $host['tag'];
 }
 
+$hostfilter = $_POST["hostfilter"];
+unset($_POST["hostfilter"]);
+setcookie('nagdash_hostfilter', $hostfilter, time()+60*60*24*365);
+
 $submitted_hosts = $_POST;
 $unwanted_hosts = array_diff($hosts, array_keys($submitted_hosts));
 
 setcookie('nagdash_unwanted_hosts', serialize($unwanted_hosts), time()+60*60*24*365);
+
 Header("Location: {$return_path}");

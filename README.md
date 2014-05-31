@@ -50,7 +50,7 @@ Easy configuration
 
 ![Choose your instances](https://github.com/lozzd/Nagdash/raw/master/images/screenshots/08_live-settings-screen.png)
 
-Live settings screen (accessed using the 's' key) lets you choose which Nagios instances are important to you on this copy of Nagdash.
+Live settings screen (accessed using the 's' key) lets you choose which Nagios instances and host patterns are important to you on this copy of Nagdash.
 
 
 ## Prerequisites

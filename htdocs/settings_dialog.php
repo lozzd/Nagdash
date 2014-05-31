@@ -16,7 +16,12 @@
         echo '</label>';
     }
 ?>
-</fieldset></form>
+</fieldset>
+<fieldset>
+<legend>Hostname regex</legend>
+<input type="input" name="hostfilter" value="<?php echo $_COOKIE['nagdash_hostfilter']; ?>">
+</fieldset>
+</form>
 </div>
 <div class="modal-footer">
   <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
