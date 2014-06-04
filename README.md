@@ -60,9 +60,13 @@ Live settings screen (accessed using the 's' key) lets you choose which Nagios i
 * A big screen to show Nagdash off
 
 ## Installation/configuration
-1. Download/clone the repo into an appropriate folder either in your webservers directory or symlinked to it
-2. Move config.php.example to config.php, edit with your favourite editor and add your Nagios host(s) to the Nagios hosts array. (see screenshot above)
-3. Load index.php in your browser and if all goes well, you will see your Nagios installation come to life, and refresh every 20 seconds.
+1. Download/clone the repo into an appropriate folder either in your
+   webservers directory or symlinked to it. Make sure to point the
+   DocumentRoot to the `htdocs` folder.
+2. Move config.php.example to config.php, edit with your favourite editor and
+   add your Nagios host(s) to the Nagios hosts array. (see screenshot above)
+3. Load index.php in your browser and if all goes well, you will see your
+   Nagios installation come to life, and refresh every 20 seconds.
 4. Reward yourself with a refreshing beverage.
 
 ## Advanced configuration
