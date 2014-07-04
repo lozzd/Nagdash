@@ -81,7 +81,7 @@ The configuration file is fairly simple at this point, but here's an explanation
     * Port: The port the nagios-api instance is running on
     * Protocol: http or https
     * Tag: The text that should be displayed against all hosts and services from this instance.
-    * Taccolour: The background colour of the tag that is displayed next to all hosts and services from this instance.
+    * Tagcolour: The background colour of the tag that is displayed next to all hosts and services from this instance.
 
 * Filter: This is a simple regex filter if you wish to only display certain hosts from all your instances. For example, if you were making a dedicated dashboard for a team that manages a certain set of servers.
 * Duration: This sets the default Downtime duration when the "Downtime" button is clicked from the Nagdash interface. Out of the box, it's 60 minutes.
