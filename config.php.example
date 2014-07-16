@@ -1,6 +1,10 @@
 <?php
 // Config
 
+// Type of API
+// Supported values are nagios-api or livestatus
+$api_type = "nagios-api";
+
 // Your Nagios hosts
 $nagios_hosts = array(
     array("hostname" => "nagios01.dc1.company.com", "port" => "6315", "protocol" => "http", "tag" => "DC1", "tagcolour" => "#336699"), 
