@@ -263,7 +263,7 @@ class NagdashHelpers {
                             "is_enabled" => ($service_detail['notifications_enabled'] > 0) ? true : false,
                         ));
                     }
-                    if ($host_detail['state'] == 0) {
+                    if ($host_detail[$api_cols['state']] == 0) {
                         $service_summary[$service_detail[$api_cols['state']]]++;
                     }
                 }
