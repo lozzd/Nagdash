@@ -173,7 +173,12 @@ if (count($known_services) > 0) { ?>
 echo "<!-- nagios-api server status: -->";
 foreach ($curl_stats as $server => $server_stats) {
     echo "<!-- {$server_stats['url']} returned code {$server_stats['http_code']}, {$server_stats['size_download']} bytes ";
-    echo "in {$server_stats['total_time']} seconds (first byte: {$server_stats['starttransfer_time']}). JSON parsed {$server_stats['objects']} hosts -->\n";
+    echo "in {$server_stats['total_time']} seconds (first byte: {$server_stats['starttransfer_time']}). ";
+    // nagios-api currently doesn't provide object count.
+    if ((array_key_exists('objects', $server_stats))) {
+        echo "JSON parsed {$server_stats['objects']} hosts";
+    }
+    echo "-->\n";
 }
 
 ?>
