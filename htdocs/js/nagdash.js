@@ -27,9 +27,8 @@ function load_nagios_data(show_spinner) {
   var refreshId = setInterval(function() {
       if (show_spinner) {
         $("#spinner").fadeIn("fast");
-      } else {
-        $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
       }
+      $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
   }, 20000);
   $.ajaxSetup({ cache: false });
 }
