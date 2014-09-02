@@ -205,7 +205,7 @@ class NagdashHelpers {
                     array_push($$array_name, array(
                         "hostname" => $hostname,
                         "host_state" => $host_detail{$api_cols['state']},
-                        "duration" => timeago($host_detail['last_state_change'], null, null, false),
+                        "duration" => timeago($host_detail['last_state_change']),
                         "detail" => $host_detail['plugin_output'],
                         "current_attempt" => $host_detail['current_attempt'],
                         "max_attempts" => $host_detail['max_attempts'],
@@ -243,14 +243,14 @@ class NagdashHelpers {
                         ) {
                             if (count($downtimes) > 0) {
                                 $downtime_info = array_pop($downtimes);
-                                $downtime_remaining = "- ". timeago($downtime_info['end_time'], null, null, false) . " left";
+                                $downtime_remaining = "- ". timeago($downtime_info['end_time']) . " left";
                             }
                         }
                         array_push($$array_name, array(
                             "hostname" => $hostname,
                             "service_name" => $service_name,
                             "service_state" => $service_detail[$api_cols['state']],
-                            "duration" => timeago($service_detail['last_state_change'], null, null, false),
+                            "duration" => timeago($service_detail['last_state_change']),
                             "last_state_change" => $service_detail['last_state_change'],
                             "detail" => $service_detail['plugin_output'],
                             "current_attempt" => $service_detail['current_attempt'],
