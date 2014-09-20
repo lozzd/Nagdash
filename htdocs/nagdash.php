@@ -20,11 +20,20 @@ $nagios_toggle_status = array(0 => "disabled", 1 => "enabled");
 
 $sort_by_time = ( isset($sort_by_time) && $sort_by_time ) ? true : false;
 
-// Check to see if the user has a cookie that disables some hosts
-$unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
+// Check to see if the user has a cookie disable some nagios instances
+if (array_key_exists('nagdash_unwanted_hosts', $_COOKIE)) {
+    $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
+} else {
+    $unwanted_hosts = array();
+}
+
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 
-$cookie_filter = $_COOKIE['nagdash_hostfilter'];
+
+// Check to see if the user has a cookie to filter out unrequired hosts
+if (array_key_exists('nagdash_hostfilter', $_COOKIE)) {
+    $cookie_filter = $_COOKIE['nagdash_hostfilter'];
+}
 
 if (!empty($cookie_filter)) {
     $filter = $cookie_filter;

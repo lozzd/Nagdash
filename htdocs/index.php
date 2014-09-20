@@ -3,8 +3,14 @@ error_reporting(E_ALL ^ E_NOTICE);
 require_once('../config.php');
 require_once('../phplib/utils.php');
 
-$unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
+if (array_key_exists('nagdash_unwanted_hosts', $_COOKIE)) {
+    $unwanted_hosts = unserialize($_COOKIE['nagdash_unwanted_hosts']);
+} else {
+    $unwanted_hosts = array();
+}
+
 if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
+
 ?>
 <html>
 <head>
