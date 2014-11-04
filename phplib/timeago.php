@@ -2,7 +2,7 @@
 ## alex at nyoc dot net
 ## Feel free to better for your needs
 
-function timeago($referencedate=0, $timepointer='', $measureby='', $autotext=true){    ## Measureby can be: s, m, h, d, or y
+function timeago($referencedate=0, $timepointer='', $measureby='', $autotext=false){    ## Measureby can be: s, m, h, d, or y
     if($timepointer == '') $timepointer = time();
     $Raw = $timepointer-$referencedate;    ## Raw time difference
     $Clean = abs($Raw);
