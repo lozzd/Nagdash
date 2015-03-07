@@ -25,11 +25,10 @@ function timeago($referencedate=0, $timepointer='', $measureby='', $autotext=tru
     
     $datedifference = floor($Clean/$calc[$usemeasure][0]);    ## Rounded date difference
     
+    $prospect = ' ago'; # Default
     if($autotext==true && ($timepointer==time())){
         if($Raw < 0){
             $prospect = ' from now';
-        }else{
-            $prospect = ' ago';
         }
     }
     

@@ -86,7 +86,7 @@ list($host_summary, $service_summary, $down_hosts, $known_hosts, $known_services
         echo "</span></td>";
         echo "<td><blink>{$nagios_host_status[$host['host_state']]}</blink></td>";
         echo "<td>{$host['duration']}</td>";
-        echo "<td>{$host['current_attempt']}/{$host['max_attempts']}</td>";
+        echo "<td>{$host['current_attempt']}/{$host['max_check_attempts']}</td>";
         echo "<td class=\"desc\">{$host['detail']}</td>";
         echo "</tr>";
     }
