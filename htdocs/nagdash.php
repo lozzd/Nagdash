@@ -39,6 +39,27 @@ if (!empty($cookie_filter)) {
     $filter = $cookie_filter;
 }
 
+// If the user wants to filter by last state change, grab the filter value.
+// Else default to '0' (we won't filter by last state change).
+// IDEA: Perhaps we create a $filter array tp pass to
+// NagdashHelpers::parse_nagios_host_data() that contains the values of 'hostfilter',
+// 'select_last_state_change', 'sort_by_time', and 'sort_descending'.
+if (isset($_COOKIE['select_last_state_change'])) {
+    $filter_select_last_state_change = (int) $_COOKIE['select_last_state_change'];
+} else {
+    $filter_select_last_state_change = 0;
+}
+
+// If 1, the user wants to sort by time; 0 if not.
+if (isset($_COOKIE['sort_by_time'])) {
+    $filter_sort_by_time = (int) $_COOKIE['sort_by_time'];
+}
+
+// If 1, the user wants to sort descending; 0 if not.
+if (isset($_COOKIE['sort_descending'])) {
+    $filter_sort_descending = (int) $_COOKIE['sort_descending'];
+}
+
 // Collect the API data from each Nagios host.
 
 if (isset($mock_state_file)) {
@@ -62,7 +83,7 @@ if (count($errors) > 0) {
         echo "<div class='status_red'>{$error}</div>";
     }
 }
-list($host_summary, $service_summary, $down_hosts, $known_hosts, $known_services, $broken_services) = NagdashHelpers::parse_nagios_host_data($state, $filter, $api_cols);
+list($host_summary, $service_summary, $down_hosts, $known_hosts, $known_services, $broken_services) = NagdashHelpers::parse_nagios_host_data($state, $filter, $api_cols, $filter_select_last_state_change);
 ?>
 
 <div id="info-window"><button class="close" onClick='$("#info-window").fadeOut("fast");'>&times;</button><div id="info-window-text"></div></div>
@@ -122,7 +143,8 @@ if (count($known_hosts) > 0) {
     <table class="widetable" id="broken_services">
     <tr><th width="30%">Hostname</th><th width="50%">Service</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
-    if ($sort_by_time) {
+    // Check for the presence of the 'sort_by_time' cookie, then the static config value.
+    if ($filter_sort_by_time || $sort_by_time) {
         usort($broken_services,'NagdashHelpers::cmp_last_state_change');
     }
     foreach($broken_services as $service) {
@@ -146,7 +168,8 @@ if (count($known_hosts) > 0) {
     <table class="widetable status_green"><tr><td><b>All services OK</b></td></tr></table>
 <?php }
 
-if ($sort_by_time) {
+// Check for the presence of the 'sort_by_time' cookie, then the static config value.
+if ($filter_sort_by_time || $sort_by_time) {
     usort($known_services,'NagdashHelpers::cmp_last_state_change');
 }
 

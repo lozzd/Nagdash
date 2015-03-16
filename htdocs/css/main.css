@@ -48,3 +48,14 @@ table#broken_hosts    tr:hover td span.controls { display:inline-block; }
                         border: 1px #848484 solid; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;.
                                           background: #F0F0F0; font-family: "HelveticaNeue-Medium", Helvetica, Arial, sans-serif; }
 
+.settings_group {
+    height: 25px;
+    line-height: 25px;
+}
+
+.settings_element {
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+    vertical-align: middle;
+}

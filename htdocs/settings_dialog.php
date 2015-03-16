@@ -1,3 +1,4 @@
+<?php require_once '../config.php'; ?>
 <div id="settings_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</a></button>
@@ -21,6 +22,52 @@
 <legend>Hostname regex</legend>
 <input type="input" name="hostfilter" value="<?php echo $_COOKIE['nagdash_hostfilter']; ?>">
 </fieldset>
+<legend>Last state change</legend>
+<div class="settings_group">
+<span class="settings_element">
+<select name="select_last_state_change" style="width:110px;">
+    <option value="0">N/A</option>
+    <option value="<?php echo(15 * 60) ?>">15 minutes</option>
+    <option value="<?php echo(60 * 60) ?>">1 hour</option>
+    <option value="<?php echo(60 * 60 * 12) ?>">12 hours</option>
+    <option value="<?php echo(60 * 60 * 24) ?>">1 day</option>
+    <option value="<?php echo(60 * 60 * 24 * 7) ?>">1 week</option>
+</select>
+</span>
+<span class="settings_element"> ago</span>
+<legend>Sort options</legend>
+<?php
+// If the config option 'sort_by_time' is true, check if the user is overriding it.
+// If not, let the config option take effect.
+$checked_sort_by_time = "";
+$checked_sort_descending = "";
+if ($sort_by_time) {
+    if (isset($_COOKIE['sort_by_time']) && $_COOKIE['sort_by_time'] == '0') {
+        $checked_sort_by_time = "";
+    } else {
+        $checked_sort_by_time = "checked";
+    }
+} elseif (isset($_COOKIE['sort_by_time']) && $_COOKIE['sort_by_time'] == '1') {
+    $checked_sort_by_time = "checked";
+}
+// Does the user want to sort in descending order?
+if (isset($_COOKIE['sort_descending']) && $_COOKIE['sort_descending'] == '1') {
+        $checked_sort_descending = "checked";
+}
+echo '<span class="settings_element">';
+echo 'Sort by time?';
+echo '<label class="checkbox inline tag_label">';
+echo '<input type="checkbox" name="sort_by_time"' . $checked_sort_by_time . '>';
+echo '</label>';
+echo '</span>';
+echo '<span class="settings_element">';
+echo 'Descending?';
+echo '<label class="checkbox inline tag_label">';
+echo '<input type="checkbox" name="sort_descending"' . $checked_sort_descending . '>';
+echo '</label>';
+echo '</span>';
+?>
+</div>
 </form>
 </div>
 <div class="modal-footer">

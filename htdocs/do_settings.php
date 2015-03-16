@@ -15,6 +15,18 @@ foreach ($nagios_hosts as $host) {
 $hostfilter = $_POST["hostfilter"];
 unset($_POST["hostfilter"]);
 setcookie('nagdash_hostfilter', $hostfilter, time()+60*60*24*365);
+$select_last_state_change = $_POST['select_last_state_change'] ? $_POST['select_last_state_change'] : "0";
+setcookie('select_last_state_change', $select_last_state_change, time()+60*60*24*365);
+if (isset($_POST['sort_by_time'])) {
+    setcookie('sort_by_time', '1', time()+60*60*24*365);
+} else {
+    setcookie('sort_by_time', '0', time()+60*60*24*365);
+}
+if (isset($_POST['sort_descending'])) {
+    setcookie('sort_descending', '1', time()+60*60*24*365);
+} else {
+    setcookie('sort_descending', '0', time()+60*60*24*365);
+}
 
 $submitted_hosts = $_POST;
 $unwanted_hosts = array_diff($hosts, array_keys($submitted_hosts));
