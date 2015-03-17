@@ -1,4 +1,4 @@
-<?php require_once '../config.php'; ?>
+<?php require '../config.php'; ?>
 <div id="settings_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</a></button>
@@ -26,12 +26,15 @@
 <div class="settings_group">
 <span class="settings_element">
 <select name="select_last_state_change" style="width:110px;">
-    <option value="0">N/A</option>
-    <option value="<?php echo(15 * 60) ?>">15 minutes</option>
-    <option value="<?php echo(60 * 60) ?>">1 hour</option>
-    <option value="<?php echo(60 * 60 * 12) ?>">12 hours</option>
-    <option value="<?php echo(60 * 60 * 24) ?>">1 day</option>
-    <option value="<?php echo(60 * 60 * 24 * 7) ?>">1 week</option>
+<?php
+foreach ($select_last_state_change_options as $time_in_seconds => $time_in_english) {
+    $selected_last_state_change_option = "";
+    if (isset($_COOKIE['select_last_state_change']) && $_COOKIE['select_last_state_change'] == $time_in_seconds) {
+        $selected_last_state_change_option = "selected";
+    }
+    echo "<option value=" . $time_in_seconds . " " . $selected_last_state_change_option . ">" . $time_in_english . "</option>";
+}
+?>
 </select>
 </span>
 <span class="settings_element"> ago</span>

@@ -144,7 +144,7 @@ if (count($known_hosts) > 0) {
     <tr><th width="30%">Hostname</th><th width="50%">Service</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
 <?php
     // Check for the presence of the 'sort_by_time' cookie, then the static config value.
-    if ($filter_sort_by_time || $sort_by_time) {
+    if ((isset($filter_sort_by_time) && $filter_sort_by_time == 1) || $sort_by_time) {
         usort($broken_services,'NagdashHelpers::cmp_last_state_change');
     }
     foreach($broken_services as $service) {
@@ -169,7 +169,7 @@ if (count($known_hosts) > 0) {
 <?php }
 
 // Check for the presence of the 'sort_by_time' cookie, then the static config value.
-if ($filter_sort_by_time || $sort_by_time) {
+if ((isset($filter_sort_by_time) && $filter_sort_by_time == 1) || $sort_by_time) {
     usort($known_services,'NagdashHelpers::cmp_last_state_change');
 }
 

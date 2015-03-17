@@ -27,6 +27,17 @@ $show_refresh_spinner = true;
 // If set to false, leave to default sorting by hostname instead.
 $sort_by_time = false;
 
+// To select by last state change, let's define some time ranges folks might
+// want to use when filtering events.
+$select_last_state_change_options = array(
+    0 => "N/A", # DO NOT MODIFY THIS VALUE
+    15 * 60 => "15 minutes",
+    60 * 60 => "1 hour",
+    60 * 60 * 12 => "12 hours",
+    60 * 60 * 24 => "1 day",
+    60 * 60 * 24 * 7 => "1 week"
+);
+
 // Enables the <blink> tag on HARD service notifications. Enable if you want more eye-catching goodness
 $enable_blinking = false;
 
