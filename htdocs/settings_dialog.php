@@ -57,19 +57,19 @@ if ($sort_by_time) {
 if (isset($_COOKIE['sort_descending']) && $_COOKIE['sort_descending'] == '1') {
         $checked_sort_descending = "checked";
 }
-echo '<span class="settings_element">';
-echo 'Sort by time?';
-echo '<label class="checkbox inline tag_label">';
-echo '<input type="checkbox" name="sort_by_time"' . $checked_sort_by_time . '>';
-echo '</label>';
-echo '</span>';
-echo '<span class="settings_element">';
-echo 'Descending?';
-echo '<label class="checkbox inline tag_label">';
-echo '<input type="checkbox" name="sort_descending"' . $checked_sort_descending . '>';
-echo '</label>';
-echo '</span>';
 ?>
+<span class="settings_element">
+Sort by time?
+<label class="checkbox inline tag_label">
+<?php echo '<input type="checkbox" name="sort_by_time"' . $checked_sort_by_time . '>'; ?>
+</label>
+</span>
+<span class="settings_element">
+Descending?
+<label class="checkbox inline tag_label">
+<?php echo '<input type="checkbox" name="sort_descending"' . $checked_sort_descending . '>'; ?>
+</label>
+</span>
 </div>
 </form>
 </div>
