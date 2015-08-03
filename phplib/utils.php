@@ -178,7 +178,7 @@ class NagdashHelpers {
             // Check if the host has been disabled locally
             if (!in_array($host['tag'], $unwanted_hosts)) {
                 list($host_state, $api_cols, $local_curl_stats) = NagdashHelpers::fetch_state($host['hostname'],
-                    $host['port'], $host['protocol'], $host['url'], $api_type);
+                    $host['port'], $host['protocol'], isset($host['url']) ? $host['url'] : null, $api_type);
                 $curl_stats = array_merge($curl_stats, $local_curl_stats);
                 if (is_string($host_state)) {
                     $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
