@@ -60,6 +60,8 @@ class NagdashHelpers {
     static function deep_ksort(&$arr) {
         if (isset($_COOKIE['sort_descending'])) {
             $filter_sort_descending = (int) $_COOKIE['sort_descending'];
+        } else {
+            $filter_sort_descending = false;
         }
         if ($filter_sort_descending) {
             krsort($arr);
@@ -106,6 +108,8 @@ class NagdashHelpers {
     static function cmp_last_state_change($a,$b) {
         if (isset($_COOKIE['sort_descending'])) {
             $filter_sort_descending = (int) $_COOKIE['sort_descending'];
+        } else {
+            $filter_sort_descending = false;
         }
         if ($filter_sort_descending) {
             if ($a['last_state_change'] == $b['last_state_change']) return 0;
