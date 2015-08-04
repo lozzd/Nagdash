@@ -29,7 +29,7 @@ function load_nagios_data(show_spinner) {
         $("#spinner").fadeIn("fast");
       }
       $("#nagioscontainer").load("nagdash.php", function() { $("#spinner").fadeOut("fast"); });
-  }, 20000);
+  }, document.refresh_every_ms);
   $.ajaxSetup({ cache: false });
 }
 
