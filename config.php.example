@@ -44,6 +44,9 @@ $select_last_state_change_options = array(
 // Enables the <blink> tag on HARD service notifications. Enable if you want more eye-catching goodness
 $enable_blinking = false;
 
+// Include more css after the default; useful for custom skin
+$extra_css = none;
+
 # For testing, uncomment this for some errors:
 //$mock_state_file = './test_data/state';
 

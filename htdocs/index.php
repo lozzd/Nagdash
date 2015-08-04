@@ -29,6 +29,11 @@ document.refresh_every_ms = <?= $refresh_every_ms ?>;
         echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n";
   } ?>
 </style>
+<?php
+    if (isset($extra_css)) {
+        echo "<link rel=\"stylesheet\" href=\"{$extra_css}\">";
+    }
+?>
 </head>
 <body>
   <div id="spinner"><h3><img src="images/ajax-loader.gif" align="absmiddle"> Refreshing...</h3></div>
