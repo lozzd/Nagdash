@@ -35,8 +35,10 @@ if (!is_array($unwanted_hosts)) $unwanted_hosts = array();
 
 
 <script>
-    $(document).keypress("s", function(e) {
-        $("#settings_modal").modal();
+    $(document).keypress(function(e) {
+        if (e.which == 115) { // "s"
+            $("#settings_modal").modal();
+        }
     });
     $(document).ready(load_nagios_data(<?php echo ($show_refresh_spinner === true)?>));
 </script>
