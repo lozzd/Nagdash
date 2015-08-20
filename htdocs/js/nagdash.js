@@ -45,7 +45,7 @@ function load_nagios_data(show_spinner) {
  *
  */
 function nagios_action(tag, host, service, action, minutes) {
-  $.post('/do_action.php', { nag_host: tag,
+  $.post('do_action.php', { nag_host: tag,
                             hostname: host,
                             service: service,
                             action: action,
