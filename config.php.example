@@ -23,6 +23,9 @@ $duration = 60*60;
 // Show the floating spinner when Nagdash is being refreshed.
 $show_refresh_spinner = true;
 
+// Refresh rate
+$refresh_every_ms = 20000;
+
 // sort_by_time: Set this to true to sort by the last state change, e.g. how long the service has been broken.
 // If set to false, leave to default sorting by hostname instead.
 $sort_by_time = false;
@@ -40,6 +43,9 @@ $select_last_state_change_options = array(
 
 // Enables the <blink> tag on HARD service notifications. Enable if you want more eye-catching goodness
 $enable_blinking = false;
+
+// Include more css after the default; useful for custom skin
+$extra_css = none;
 
 # For testing, uncomment this for some errors:
 //$mock_state_file = './test_data/state';

@@ -60,6 +60,8 @@ class NagdashHelpers {
     static function deep_ksort(&$arr) {
         if (isset($_COOKIE['sort_descending'])) {
             $filter_sort_descending = (int) $_COOKIE['sort_descending'];
+        } else {
+            $filter_sort_descending = false;
         }
         if ($filter_sort_descending) {
             krsort($arr);
@@ -106,6 +108,8 @@ class NagdashHelpers {
     static function cmp_last_state_change($a,$b) {
         if (isset($_COOKIE['sort_descending'])) {
             $filter_sort_descending = (int) $_COOKIE['sort_descending'];
+        } else {
+            $filter_sort_descending = false;
         }
         if ($filter_sort_descending) {
             if ($a['last_state_change'] == $b['last_state_change']) return 0;
@@ -174,7 +178,7 @@ class NagdashHelpers {
             // Check if the host has been disabled locally
             if (!in_array($host['tag'], $unwanted_hosts)) {
                 list($host_state, $api_cols, $local_curl_stats) = NagdashHelpers::fetch_state($host['hostname'],
-                    $host['port'], $host['protocol'], $host['url'], $api_type);
+                    $host['port'], $host['protocol'], isset($host['url']) ? $host['url'] : null, $api_type);
                 $curl_stats = array_merge($curl_stats, $local_curl_stats);
                 if (is_string($host_state)) {
                     $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
