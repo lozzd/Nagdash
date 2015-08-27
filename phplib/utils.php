@@ -58,6 +58,7 @@ class NagdashHelpers {
 
 
     static function deep_ksort(&$arr) {
+        $filter_sort_descending = 0;
         if (isset($_COOKIE['sort_descending'])) {
             $filter_sort_descending = (int) $_COOKIE['sort_descending'];
         } else {
