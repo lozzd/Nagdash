@@ -47,6 +47,9 @@ $enable_blinking = false;
 // Include more css after the default; useful for custom skin
 $extra_css = none;
 
+// Show instructions for accessing settings panel
+$show_settings_instructions = true;
+
 # For testing, uncomment this for some errors:
 //$mock_state_file = './test_data/state';
 

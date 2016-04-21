@@ -12,12 +12,13 @@ if (!isset($_POST['nag_host'])) {
 } else {
     $nagios_instance = $_POST['nag_host'];
     $action = $_POST['action'];
+    $comment = $action == "ack" && isset($_POST['attribute']) ? $_POST['attribute'] : "{$action} from Nagdash";
     $details = [
             "host" => $_POST['hostname'],
             "service" => ($_POST['service']) ? $_POST['service'] : null,
             "author" => function_exists("nagdash_get_user") ? nagdash_get_user() : "Nagdash",
-            "duration" => ($_POST['duration']) ? ($_POST['duration'] * 60) : null,
-            "comment" => "{$action} from Nagdash"
+            "duration" => ($_POST['attribute']) ? ($_POST['attribute'] * 60) : null,
+            "comment" => $comment
             ];
 
 

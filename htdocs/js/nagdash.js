@@ -41,16 +41,13 @@ function load_nagios_data(show_spinner) {
  *   host    - host to apply the action to
  *   service - the service to apply the action to
  *   action  - the actual action to do
- *   minutes - minutes to downtime (only for downtime action)
+ *   attr - arbitrary attribute related to action
  *
  */
-function nagios_action(tag, host, service, action, minutes) {
+function nagios_action(tag, host, service, action, attr) {
   $.post('do_action.php', { nag_host: tag,
                             hostname: host,
                             service: service,
                             action: action,
-                            duration: minutes}, function(data) { showInfo(data) } );
+                            attribute: attr}, function(data) { showInfo(data) } );
 }
-
-
-
