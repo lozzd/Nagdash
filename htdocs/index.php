@@ -44,7 +44,7 @@ document.refresh_every_ms = <?php echo (isset($refresh_every_ms) ? $refresh_ever
 
 <script>
     $(document).keypress(function(e) {
-        if (e.which == 115) { // "s"
+        if (e.which == 115 && !$(".controls div").hasClass("open")) { // "s"
             $("#settings_modal").modal();
         }
     });
