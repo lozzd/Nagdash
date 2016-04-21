@@ -38,7 +38,11 @@ document.refresh_every_ms = <?php echo (isset($refresh_every_ms) ? $refresh_ever
 <body>
   <div id="spinner"><h3><img src="images/ajax-loader.gif" align="absmiddle"> Refreshing...</h3></div>
   <div id="nagioscontainer"></div>
-  <?php NagdashHelpers::render("settings_dialog.php", ["nagios_hosts" => $nagios_hosts,
+  <?php
+  if ($show_settings_instructions) {
+        echo "<span id='settings-note'>Press 's' for settings.</span>";
+    }
+  NagdashHelpers::render("settings_dialog.php", ["nagios_hosts" => $nagios_hosts,
                                                        "unwanted_hosts" => $unwanted_hosts]);?>
 
 

@@ -52,3 +52,5 @@ table#broken_hosts    tr:hover td span.controls { display:inline-block; }
 #ack-comment-container { padding:0.5em; }
 #ack-comment-container input { margin:0; width:80%; height:23px; }
 #ack-comment-container a { width:12%; display:inline-block; padding-left: 2%; padding-right: 2%;}
+#settings-note { float:right; opacity:0.1; transition: .25s ease-in-out; -moz-transition: .25s ease-in-out; -webkit-transition: .25s ease-in-out; }
+#settings-note:hover { opacity:0.9; }
