@@ -19,6 +19,7 @@ th                  { border: 1px black solid; background-color: #D8D8D8 }
 #info-window-text   { padding: 30px; vertical-align: middle }
 .tag                { font-size: 0.6em; color: white; padding: 4px; -webkit-border-radius: 5px; }
 .tag_label          { color: white; padding-top: 10px !important; padding-bottom: 10px; padding-right: 30px; padding-left: 30px; -webkit-border-radius: 5px; }
+#help               { text-align: right; font-style: italic; }
 
 div.frame           { padding-bottom: 5px; }
 

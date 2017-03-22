@@ -50,5 +50,6 @@ document.refresh_every_ms = <?php echo (isset($refresh_every_ms) ? $refresh_ever
     });
     $(document).ready(load_nagios_data(<?php echo ($show_refresh_spinner === true)?>));
 </script>
+<div id="help">Press "s" for settings</div>
 </body>
 </html>
