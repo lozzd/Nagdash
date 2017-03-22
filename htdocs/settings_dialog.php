@@ -22,6 +22,7 @@
 <legend>Hostname regex</legend>
 <input type="input" name="hostfilter" value="<?php echo $_COOKIE['nagdash_hostfilter']; ?>">
 </fieldset>
+<fieldset>
 <legend>Last state change</legend>
 <div class="settings_group">
 <span class="settings_element">
@@ -38,6 +39,9 @@ foreach ($select_last_state_change_options as $time_in_seconds => $time_in_engli
 </select>
 </span>
 <span class="settings_element"> ago</span>
+</div>
+</fieldset>
+<fieldset>
 <legend>Sort options</legend>
 <?php
 // If the config option 'sort_by_time' is true, check if the user is overriding it.
@@ -70,7 +74,22 @@ Descending?
 <?php echo '<input type="checkbox" name="sort_descending"' . $checked_sort_descending . '>'; ?>
 </label>
 </span>
-</div>
+</fieldset>
+<fieldset>
+<legend>Alert Sections</legend>
+<?php
+$checked_hide_ksps = "";
+if (isset($_COOKIE['hide_ksps']) && $_COOKIE['hide_ksps'] == '1') {
+        $checked_hide_ksps = "checked";
+}
+?>
+<span class="settings_element">
+Hide "Known Service Problems"
+<label class="checkbox inline tag_label">
+<?php echo '<input type="checkbox" name="hide_ksps"' . $checked_hide_ksps . '>'; ?>
+</label>
+</span>
+</fieldset>
 </form>
 </div>
 <div class="modal-footer">

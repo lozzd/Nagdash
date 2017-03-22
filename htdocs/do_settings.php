@@ -28,6 +28,12 @@ if (isset($_POST['sort_descending'])) {
     setcookie('sort_descending', '0', time()+60*60*24*365);
 }
 
+if (isset($_POST['hide_ksps'])) {
+    setcookie('hide_ksps', '1', time()+60*60*24*365);
+} else {
+    setcookie('hide_ksps', '0', time()+60*60*24*365);
+}
+
 $submitted_hosts = $_POST;
 $unwanted_hosts = array_diff($hosts, array_keys($submitted_hosts));
 

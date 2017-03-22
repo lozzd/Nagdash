@@ -60,6 +60,11 @@ if (isset($_COOKIE['sort_descending'])) {
     $filter_sort_descending = (int) $_COOKIE['sort_descending'];
 }
 
+// If 1, the user wants to HIDE "Known Service Problems"; 0 if not.
+if (isset($_COOKIE['hide_ksps'])) {
+    $filter_hide_ksps = (int) $_COOKIE['hide_ksps'];
+}
+
 // Collect the API data from each Nagios host.
 
 if (isset($mock_state_file)) {
@@ -173,11 +178,14 @@ if ((isset($filter_sort_by_time) && $filter_sort_by_time == 1) || $sort_by_time)
     usort($known_services,'NagdashHelpers::cmp_last_state_change');
 }
 
-if (count($known_services) > 0) { ?>
-    <h4>Known Service Problems</h4>
-    <table class="widetable known_service" id="known_services">
-    <tr><th width="30%">Hostname</th><th width="37%">Service</th><th width="18%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
-<?php
+if (isset($filter_hide_ksps) && $filter_hide_ksps == 1) {
+    echo "<!--Known Service Problems hidden by user preference -->";
+} else {
+    if (count($known_services) > 0) { ?>
+        <h4>Known Service Problems</h4>
+        <table class="widetable known_service" id="known_services">
+        <tr><th width="30%">Hostname</th><th width="37%">Service</th><th width="18%">State</th><th width="10%">Duration</th><th width="5%">Attempt</th></tr>
+    <?php
 
     foreach($known_services as $service) {
         if ($service['is_ack']) $status_text = "ack";
@@ -192,6 +200,7 @@ if (count($known_services) > 0) { ?>
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
         echo "</tr>";
     }
+}
 ?>
 
     </table>
