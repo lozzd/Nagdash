@@ -6,6 +6,7 @@ table               { border: 1px solid #c6c6c6; background-color: #F0F0F0; bord
                         *border-collapse: collapse; -webkit-border-radius: 4px;
                         -moz-border-radius: 4px; border-radius: 4px; }
 th                  { border: 1px black solid; background-color: #D8D8D8 }
+a, a:link, a:hover  { color: unset; }
 .widetable          { width: 100%; clear: both }
 .bold               { font-weight: bold; }
 .status_green       { background-color: #269926; color: white; padding: 3px }
