@@ -157,7 +157,7 @@ if (count($known_hosts) > 0) {
                                                 "host" => $service['hostname'],
                                                 "service" => $service['service_name']]);
         echo "</span></td>";
-        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]} {$soft_style}'>{$blink_tag}{$service['service_name']}<span class='detail'>{$service['detail']}</span></td>";
+        echo "<td class='bold {$nagios_service_status_colour[$service['service_state']]} {$soft_style}'><a href='{$service['weburl']}' target=\"_blank\">{$blink_tag}{$service['service_name']}</a><span class='detail'>{$service['detail']}</span></td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
         echo "</tr>";
@@ -186,7 +186,7 @@ if (count($known_services) > 0) { ?>
         echo "<tr class='known_service'>";
         $tag = NagdashHelpers::print_tag($service['tag'], count($nagios_hosts));
         echo "<td>{$service['hostname']} " . $tag . "</td>";
-        echo "<td>{$service['service_name']}</td>";
+        echo "<td><a href='{$service['weburl']}' target=\"_blank\">{$service['service_name']}</a></td>";
         echo "<td class='{$nagios_service_status_colour[$service['service_state']]}'>{$nagios_service_status[$service['service_state']]} ({$status_text})</td>";
         echo "<td>{$service['duration']}</td>";
         echo "<td>{$service['current_attempt']}/{$service['max_attempts']}</td>";
