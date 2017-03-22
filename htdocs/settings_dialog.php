@@ -75,6 +75,21 @@ Descending?
 </label>
 </span>
 </fieldset>
+<fieldset>
+<legend>Alert Sections</legend>
+<?php
+$checked_hide_ksps = "";
+if (isset($_COOKIE['hide_ksps']) && $_COOKIE['hide_ksps'] == '1') {
+        $checked_hide_ksps = "checked";
+}
+?>
+<span class="settings_element">
+Hide "Known Service Problems"
+<label class="checkbox inline tag_label">
+<?php echo '<input type="checkbox" name="hide_ksps"' . $checked_hide_ksps . '>'; ?>
+</label>
+</span>
+</fieldset>
 </form>
 </div>
 <div class="modal-footer">
