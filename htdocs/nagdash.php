@@ -188,7 +188,7 @@ if (count($known_services) > 0) { ?>
 		$service_comment = '';
 		if(!empty($service['comments'])) {
 			foreach($service['comments'] as $comment) {
-				$service_comment .= $comment['comment_data'];
+                $service_comment .= "<li>".$comment['comment_data']."</li>";
 			}
 		}
 		
