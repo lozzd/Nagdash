@@ -179,6 +179,9 @@ class NagdashHelpers {
             if (!in_array($host['tag'], $unwanted_hosts)) {
                 list($host_state, $api_cols, $local_curl_stats) = NagdashHelpers::fetch_state($host['hostname'],
                     $host['port'], $host['protocol'], isset($host['url']) ? $host['url'] : null, $api_type);
+                if(!is_null($local_curl_stats)) {
+                    $curl_stats = array_merge($curl_stats, $local_curl_stats);
+                }
                 $curl_stats = array_merge($curl_stats, $local_curl_stats);
                 if (is_string($host_state)) {
                     $errors[] = "Could not connect to API on host {$host['hostname']}, port {$host['port']}: {$host_state}";
