@@ -26,7 +26,7 @@ document.refresh_every_ms = <?php echo (isset($refresh_every_ms) ? $refresh_ever
 <link rel="stylesheet" href="css/main.css">
 <style type="text/css">
   <?php foreach ($nagios_hosts as $host) {
-        echo ".tag_{$host['tag']}   { background-color: {$host['tagcolour']} }\n";
+        echo ".tag_".str_replace('.', '_', $host['tag'])."   { background-color: {$host['tagcolour']} }\n";
   } ?>
 </style>
 <?php
