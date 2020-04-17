@@ -3,8 +3,9 @@
 class NagdashHelpers {
 
     static function print_tag($tag_name, $nagios_hostcount) {
+        $tag = str_replace('.', '_', $tag_name);
         if (($nagios_hostcount) > 1) {
-            return "<span class='tag tag_{$tag_name}'>{$tag_name}</span>";
+            return "<span class='tag tag_{$tag}'>{$tag_name}</span>";
         } else {
             return false;
         }
